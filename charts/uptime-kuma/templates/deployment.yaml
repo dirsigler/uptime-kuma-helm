@@ -24,6 +24,7 @@ spec:
       imagePullSecrets:
         {{- toYaml . | nindent 8 }}
       {{- end }}
+      enableServiceLinks: false
       serviceAccountName: {{ include "uptime-kuma.serviceAccountName" . }}
       securityContext:
         {{- toYaml .Values.podSecurityContext | nindent 8 }}
