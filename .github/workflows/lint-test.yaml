@@ -23,6 +23,9 @@ jobs:
       - name: Set up chart-testing
         uses: helm/chart-testing-action@v2.1.0
 
+      - name: Git fetch
+        run: git fetch --all
+
       - name: Run chart-testing (list-changed --config .github/ct.yaml)
         id: list-changed
         run: |
