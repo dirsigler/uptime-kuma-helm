@@ -98,3 +98,7 @@ nodeSelector: {}
 tolerations: []
 
 affinity: {}
+
+volume:
+  accessMode: ReadWriteOnce
+  size: 4Gi
