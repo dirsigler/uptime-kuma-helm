@@ -1,0 +1,7 @@
+# See https://github.com/helm/chart-testing#configuration
+remote: origin
+chart-dirs:
+  - charts
+chart-repos:
+  - uptime-kuma=https://dirsigler.github.io/uptime-kuma-helm
+debug: true
