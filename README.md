@@ -1,5 +1,7 @@
 # Uptime-Kuma Helm Chart
 
+[![Artifact Hub](https://img.shields.io/endpoint?url=https://artifacthub.io/badge/repository/uptime-kuma)](https://artifacthub.io/packages/search?repo=uptime-kuma)
+
 This is a Helm Chart for the awesome [Uptime-Kuma](https://github.com/louislam/uptime-kuma) project.
 Please be advised that the Helm Chart my not fulfill all needs and is work-in-progress.
 
@@ -17,8 +19,8 @@ the latest versions of the packages. You can then run `helm search repo uptime-k
 
 To install the uptime-kuma chart:
 
-    helm install my-uptime-kuma uptime-kuma/uptime-kuma
+    helm upgrade my-uptime-kuma uptime-kuma/uptime-kuma --install --namespace monitoring --create-namespace
 
 To uninstall the chart:
 
-    helm delete my-uptime-kuma
+    helm delete my-uptime-kuma --namespace monitoring
