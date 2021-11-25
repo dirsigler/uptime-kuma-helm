@@ -9,6 +9,9 @@ spec:
   ports:
     - port: {{ .Values.service.port }}
       targetPort: 3001
+      {{- if eq .Values.service.type "NodePort"}}
+      nodePort: {{ .Values.service.nodePort | nindent 4 }}
+      {{- end }}
       protocol: TCP
       name: http
   selector:

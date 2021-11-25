@@ -98,5 +98,6 @@ tolerations: []
 affinity: {}
 
 volume:
+  storageClassName: ""
   accessMode: ReadWriteOnce
   size: 4Gi
