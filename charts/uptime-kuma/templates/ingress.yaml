@@ -11,6 +11,9 @@ metadata:
   name: {{ $fullName }}
   labels:
     {{- include "uptime-kuma.labels" . | nindent 4 }}
+ 	      {{- if .Values.ingress.extraLabels }}
+{{ toYaml .Values.ingress.extraLabels | nindent 4 }}
+      {{- end }}
   {{- with .Values.ingress.annotations }}
   annotations:
     {{- toYaml . | nindent 4 }}

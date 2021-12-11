@@ -24,6 +24,8 @@ serviceAccount:
   name: ""
 
 podAnnotations: {}
+podLabels: {}
+  # app: uptime-kuma
 
 podSecurityContext: {}
   # fsGroup: 2000
@@ -42,6 +44,8 @@ service:
 
 ingress:
   enabled: true
+  extraLabels: {}
+    # vhost: uptime-kuma.company.corp
   annotations:
     kubernetes.io/ingress.class: nginx
     nginx.ingress.kubernetes.io/proxy-read-timeout: "3600"
