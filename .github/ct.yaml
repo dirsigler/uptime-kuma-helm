@@ -3,5 +3,5 @@ remote: origin
 chart-dirs:
   - charts
 chart-repos:
-  - uptime-kuma=https://dirsigler.github.io/uptime-kuma-helm
+  - uptime-kuma=https://chrisbsmith.github.io/uptime-kuma-helm
 debug: true
