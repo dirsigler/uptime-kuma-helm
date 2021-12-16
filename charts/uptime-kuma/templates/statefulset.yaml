@@ -1,10 +1,11 @@
 apiVersion: apps/v1
-kind: Deployment
+kind: StatefulSet
 metadata:
   name: {{ include "uptime-kuma.fullname" . }}
   labels:
     {{- include "uptime-kuma.labels" . | nindent 4 }}
 spec:
+  serviceName: {{ include "uptime-kuma.fullname" . }}
   {{- if not .Values.autoscaling.enabled }}
   replicas: {{ .Values.replicaCount }}
   {{- end }}
@@ -46,7 +47,7 @@ spec:
               protocol: TCP
           volumeMounts:
             - mountPath: /app/data
-              name: storage
+              name: uptime-kuma-data
           livenessProbe:
             exec:
               command:
@@ -71,7 +72,17 @@ spec:
       tolerations:
         {{- toYaml . | nindent 8 }}
       {{- end }}
-      volumes:
-        - name: storage
-          persistentVolumeClaim:
-            claimName: {{ include "uptime-kuma.fullname" . }}
+
+  volumeClaimTemplates:
+    - metadata:
+        name: uptime-kuma-data
+      spec:
+        accessModes:
+          - {{ .Values.volume.accessMode }}
+        resources:
+          requests:
+            storage: {{ .Values.volume.size }}
+        {{- if .Values.volume.storageClassName }}
+        storageClassName: {{ .Values.volume.storageClassName }}
+        {{- end }}
+        volumeMode: Filesystem

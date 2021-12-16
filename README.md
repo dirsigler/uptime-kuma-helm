@@ -1,3 +1,5 @@
+> Forked from https://chrisbsmith.github.io/uptime-kuma-helm
+
 # Uptime-Kuma Helm Chart
 
 [![Artifact Hub](https://img.shields.io/endpoint?url=https://artifacthub.io/badge/repository/uptime-kuma)](https://artifacthub.io/packages/search?repo=uptime-kuma)
@@ -12,7 +14,7 @@ Helm's [documentation](https://helm.sh/docs) to get started.
 
 Once Helm has been set up correctly, add the repo as follows:
 
-    helm repo add uptime-kuma https://dirsigler.github.io/uptime-kuma-helm
+    helm repo add uptime-kuma https://chrisbsmith.github.io/uptime-kuma-helm
 
 If you had already added this repo earlier, run `helm repo update` to retrieve
 the latest versions of the packages. You can then run `helm search repo uptime-kuma` to see the charts.
