@@ -8,6 +8,15 @@ on:
 jobs:
   lint-test:
     runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        k8s:
+          - v1.18.15
+          - v1.19.11
+          - v1.20.7
+          - v1.21.2
+          - v1.22.4
+          - v1.23.0
     steps:
       - name: Checkout
         uses: actions/checkout@v2
@@ -37,9 +46,11 @@ jobs:
       - name: Run chart-testing (lint)
         run: ct lint --config .github/ct.yaml --target-branch main
 
-      - name: Create kind cluster
+      - name: Create kind ${{ matrix.k8s }} cluster
         uses: helm/kind-action@v1.2.0
         if: steps.list-changed.outputs.changed == 'true'
+        with:
+          node_image: kindest/node:${{ matrix.k8s }}
 
       - name: Run chart-testing (install)
         run: ct install --config .github/ct.yaml --target-branch main
