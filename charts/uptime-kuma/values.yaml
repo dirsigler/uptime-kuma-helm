@@ -43,7 +43,7 @@ service:
   port: 3001
 
 ingress:
-  enabled: true
+  enabled: false
   extraLabels: {}
     # vhost: uptime-kuma.company.corp
   annotations:
