@@ -14,6 +14,8 @@ imagePullSecrets: []
 nameOverride: ""
 fullnameOverride: ""
 
+useDeploy: true # If this option is set to false a StateFulset instead of a Deployment is used
+
 serviceAccount:
   # Specifies whether a service account should be created
   create: false
