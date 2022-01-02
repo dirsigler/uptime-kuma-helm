@@ -24,3 +24,9 @@ To install the uptime-kuma chart:
 To uninstall the chart:
 
     helm delete my-uptime-kuma --namespace monitoring
+
+## Values
+
+| Value     | Default | Description                                                                                             |
+|-----------|---------|---------------------------------------------------------------------------------------------------------|
+| useDeploy | `true`    | If true the helm templates generates a K8S Deployment + PVC. If set to false it will use a StateFulset. |

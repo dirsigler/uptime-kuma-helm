@@ -20,3 +20,4 @@
   echo "Visit http://127.0.0.1:3001 to use your application"
   kubectl --namespace {{ .Release.Namespace }} port-forward $POD_NAME 3001:$CONTAINER_PORT
 {{- end }}
+  
