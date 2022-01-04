@@ -1,21 +1,17 @@
-{{- if not .Values.useDeploy -}}
+{{- if .Values.useDeploy -}}
 apiVersion: apps/v1
-kind: StatefulSet
+kind: Deployment
 metadata:
   name: {{ include "uptime-kuma.fullname" . }}
   labels:
     {{- include "uptime-kuma.labels" . | nindent 4 }}
 spec:
-  serviceName: {{ include "uptime-kuma.fullname" . }}
   {{- if not .Values.autoscaling.enabled }}
   replicas: {{ .Values.replicaCount }}
   {{- end }}
   selector:
     matchLabels:
       {{- include "uptime-kuma.selectorLabels" . | nindent 6 }}
-      {{- if .Values.podLabels }}
-{{ toYaml .Values.podLabels | indent 6 }}
-      {{- end }}
   template:
     metadata:
       {{- with .Values.podAnnotations }}
@@ -24,15 +20,11 @@ spec:
       {{- end }}
       labels:
         {{- include "uptime-kuma.selectorLabels" . | nindent 8 }}
-        {{- if .Values.podLabels }}
-{{ toYaml .Values.podLabels | indent 8 }}
-        {{- end }}
     spec:
       {{- with .Values.imagePullSecrets }}
       imagePullSecrets:
         {{- toYaml . | nindent 8 }}
       {{- end }}
-      enableServiceLinks: false
       serviceAccountName: {{ include "uptime-kuma.serviceAccountName" . }}
       securityContext:
         {{- toYaml .Values.podSecurityContext | nindent 8 }}
@@ -73,16 +65,8 @@ spec:
       tolerations:
         {{- toYaml . | nindent 8 }}
       {{- end }}
-
-  volumeClaimTemplates:
-    - metadata:
-        name: storage
-      spec:
-        accessModes:
-          - {{ .Values.volume.accessMode }}
-        resources:
-          requests:
-            storage: {{ .Values.volume.size }}
-        storageClassName: {{ .Values.volume.storageClassName | default "standard" }}
-        volumeMode: Filesystem
+      volumes:
+      - name: storage
+        persistentVolumeClaim:
+          claimName: {{ include "uptime-kuma.fullname" . }}-pvc
 {{- end -}}
