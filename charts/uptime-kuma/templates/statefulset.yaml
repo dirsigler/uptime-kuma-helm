@@ -46,11 +46,11 @@ spec:
             - name: http
               containerPort: 3001
               protocol: TCP
-          {{- if .Values.volume.enabled -}}
+          {{ if .Values.volume.enabled -}}
           volumeMounts:
             - mountPath: /app/data
               name: storage
-          {{- end }}
+          {{ end }}
           livenessProbe:
             exec:
               command:
@@ -75,7 +75,7 @@ spec:
       tolerations:
         {{- toYaml . | nindent 8 }}
       {{- end }}
-  {{- if .Values.volume.enabled -}}
+  {{ if .Values.volume.enabled -}}
   volumeClaimTemplates:
     - metadata:
         name: storage
