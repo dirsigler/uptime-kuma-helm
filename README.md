@@ -30,3 +30,4 @@ To uninstall the chart:
 | Value     | Default | Description                                                                                             |
 |-----------|---------|---------------------------------------------------------------------------------------------------------|
 | useDeploy | `true`    | If true the helm templates generates a K8S Deployment + PVC. If set to false it will use a StateFulset. |
+| volume.enabled | `true` | If false no PVC will be created and therefore no PV will be attached. |

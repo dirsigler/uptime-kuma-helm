@@ -110,6 +110,7 @@ tolerations: []
 affinity: {}
 
 volume:
+  enabled: true
   accessMode: ReadWriteOnce
   size: 4Gi
   # If you want to use a storage class other than the default, uncomment this

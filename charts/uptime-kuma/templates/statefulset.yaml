@@ -46,9 +46,11 @@ spec:
             - name: http
               containerPort: 3001
               protocol: TCP
+          {{- if .Values.volume.enabled -}}
           volumeMounts:
             - mountPath: /app/data
               name: storage
+          {{- end }}
           livenessProbe:
             exec:
               command:
@@ -73,7 +75,7 @@ spec:
       tolerations:
         {{- toYaml . | nindent 8 }}
       {{- end }}
-
+  {{- if .Values.volume.enabled -}}
   volumeClaimTemplates:
     - metadata:
         name: storage
@@ -85,4 +87,5 @@ spec:
             storage: {{ .Values.volume.size }}
         storageClassName: {{ .Values.volume.storageClassName | default "standard" }}
         volumeMode: Filesystem
+  {{- end -}}
 {{- end -}}
