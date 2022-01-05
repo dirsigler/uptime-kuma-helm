@@ -30,3 +30,4 @@ To uninstall the chart:
 | Value     | Default | Description                                                                                             |
 |-----------|---------|---------------------------------------------------------------------------------------------------------|
 | useDeploy | `true`    | If true the helm templates generates a K8S Deployment + PVC. If set to false it will use a StateFulset. |
+| volume.storageClassName | `standard` | If set the storage class referenced will be applied. Otherwise standard will be used. 
