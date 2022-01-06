@@ -9,6 +9,6 @@ maintainers:
     email: dennis@irsigler.dev
 name: uptime-kuma
 sources:
-- https://github.com/louislam/uptime-kuma
+  - https://github.com/louislam/uptime-kuma
 type: application
-version: 2.0.1
+version: 2.1.0

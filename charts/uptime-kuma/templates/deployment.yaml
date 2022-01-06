@@ -38,9 +38,11 @@ spec:
             - name: http
               containerPort: 3001
               protocol: TCP
+          {{ if .Values.volume.enabled -}}
           volumeMounts:
             - mountPath: /app/data
               name: storage
+          {{ end }}
           livenessProbe:
             exec:
               command:
@@ -65,8 +67,10 @@ spec:
       tolerations:
         {{- toYaml . | nindent 8 }}
       {{- end }}
+      {{ if .Values.volume.enabled -}}
       volumes:
       - name: storage
         persistentVolumeClaim:
           claimName: {{ include "uptime-kuma.fullname" . }}-pvc
+      {{- end -}}
 {{- end -}}
