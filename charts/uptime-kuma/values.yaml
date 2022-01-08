@@ -47,6 +47,7 @@ securityContext:
 service:
   type: ClusterIP
   port: 3001
+  annotations: {}
 
 ingress:
   enabled: false
