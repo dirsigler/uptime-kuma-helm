@@ -30,6 +30,7 @@ podAnnotations: {}
 podLabels:
   {}
   # app: uptime-kuma
+podEnv: {}
 
 podSecurityContext:
   {}
