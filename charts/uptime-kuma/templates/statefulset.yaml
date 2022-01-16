@@ -89,7 +89,8 @@ spec:
         resources:
           requests:
             storage: {{ .Values.volume.size }}
-        storageClassName: {{ .Values.volume.storageClassName | default "standard" }}
-        volumeMode: Filesystem
+        {{- with .Values.volume.storageClassName }}
+        storageClassName: {{ . }}
+        {{- end }}
   {{- end -}}
 {{- end -}}
