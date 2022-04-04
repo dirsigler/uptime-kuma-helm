@@ -25,12 +25,6 @@ To uninstall the chart:
 
     helm delete my-uptime-kuma --namespace monitoring
 
-## Values
+## Configuration
 
-| Value     | Default | Description                                                                                             |
-|-----------|---------|---------------------------------------------------------------------------------------------------------|
-| useDeploy | `true`    | If true the helm templates generates a K8S Deployment + PVC. If set to false it will use a StateFulset. |
-| volume.enabled | `true` | If false no PVC will be created and therefore no PV will be attached. |
-| volume.storageClassName | `standard` | If set the storage class referenced will be applied. Otherwise standard will be used. |
-| podEnv | `{}` | PodEnv is used to introduce environment variables for the docker container. |
-| existingClaim | `{}` | existingClaim is used to reuse an existing PersistentVolumeClaim |
+To get an overview of the configurable and default Values check out the Chart specific [README](./charts/uptime-kuma/README.md).
