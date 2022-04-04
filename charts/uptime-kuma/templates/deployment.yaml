@@ -75,6 +75,6 @@ spec:
       volumes:
       - name: storage
         persistentVolumeClaim:
-          claimName: {{ include "uptime-kuma.fullname" . }}
+          claimName: {{ include "uptime-kuma.fullname" . }}-pvc
       {{- end -}}
 {{- end -}}
