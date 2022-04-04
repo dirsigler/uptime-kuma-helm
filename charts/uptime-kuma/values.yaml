@@ -27,17 +27,14 @@ serviceAccount:
   name: ""
 
 podAnnotations: {}
-podLabels:
-  {}
+podLabels: {}
   # app: uptime-kuma
 podEnv: {}
 
-podSecurityContext:
-  {}
+podSecurityContext: {}
   # fsGroup: 2000
 
-securityContext:
-  {}
+securityContext: {}
   # capabilities:
   #   drop:
   #   - ALL
@@ -52,9 +49,8 @@ service:
 
 ingress:
   enabled: false
-  className: ""
-  extraLabels:
-    {}
+  # className: ""
+  extraLabels: {}
     # vhost: uptime-kuma.company.corp
   annotations:
     nginx.ingress.kubernetes.io/proxy-read-timeout: "3600"
@@ -72,7 +68,7 @@ ingress:
         proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
         proxy_set_header   Upgrade $http_upgrade;
         proxy_cache_bypass $http_upgrade;
-        }
+      }
   hosts:
     - host: chart-example.local
       paths:
@@ -85,8 +81,7 @@ ingress:
     #   hosts:
     #     - chart-example.local
 
-resources:
-  {}
+resources: {}
   # We usually recommend not to specify default resources and to leave this as a conscious
   # choice for the user. This also increases chances charts run on environments with little
   # resources, such as Minikube. If you do want to specify resources, uncomment the following
@@ -118,3 +113,5 @@ volume:
   # If you want to use a storage class other than the default, uncomment this
   # line and define the storage class name
   # storageClassName:
+  # Reuse your own pre-existing PVC.
+  existingClaim: {}

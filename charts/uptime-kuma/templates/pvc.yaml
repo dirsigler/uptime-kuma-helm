@@ -1,5 +1,5 @@
-{{- if .Values.useDeploy -}}
-{{- if .Values.volume.enabled -}}
+{{- if and .Values.useDeploy (not .Values.volume.existingClaim) }}
+{{- if and .Values.volume.enabled (not .Values.volume.existingClaim) }}
 kind: PersistentVolumeClaim
 apiVersion: v1
 metadata:

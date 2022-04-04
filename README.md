@@ -33,4 +33,4 @@ To uninstall the chart:
 | volume.enabled | `true` | If false no PVC will be created and therefore no PV will be attached. |
 | volume.storageClassName | `standard` | If set the storage class referenced will be applied. Otherwise standard will be used. |
 | podEnv | `{}` | PodEnv is used to introduce environment variables for the docker container. |
-
+| existingClaim | `{}` | existingClaim is used to reuse an existing PersistentVolumeClaim |
