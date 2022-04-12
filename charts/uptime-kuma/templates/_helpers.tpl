@@ -60,3 +60,11 @@ Create the name of the service account to use
 {{- default "default" .Values.serviceAccount.name }}
 {{- end }}
 {{- end }}
+
+{{/*
+Create a map of default environment variable values for pods / containers
+*/}}
+{{- define "uptime-kuma.defaultPodEnv" -}}
+- name: UPTIME_KUMA_PORT
+  value: {{ .Values.podPort | quote }}
+{{- end }}

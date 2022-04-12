@@ -42,15 +42,15 @@ A self-hosted Monitoring tool like "Uptime-Robot".
 | nameOverride | string | `""` |  |
 | nodeSelector | object | `{}` |  |
 | podAnnotations | object | `{}` |  |
-| podEnv[0].name | string | `"UPTIME_KUMA_PORT"` |  |
-| podEnv[0].value | string | `"3001"` |  |
+| podEnv | object | `{}` | environment variables to pass to the main pod container |
 | podLabels | object | `{}` |  |
+| podPort | int | `3001` | internal port configuration to use in main pod container |
 | podSecurityContext | object | `{}` |  |
 | replicaCount | int | `1` |  |
 | resources | object | `{}` |  |
 | securityContext | object | `{}` |  |
 | service.annotations | object | `{}` |  |
-| service.port | int | `3001` |  |
+| service.port | int | `3001` | exposed service port for uptime-kuma, may be the same port as configured for `podPort` |
 | service.type | string | `"ClusterIP"` |  |
 | serviceAccount.annotations | object | `{}` |  |
 | serviceAccount.create | bool | `false` |  |

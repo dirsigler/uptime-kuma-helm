@@ -34,13 +34,14 @@ spec:
             {{- toYaml .Values.securityContext | nindent 12 }}
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
-          {{- with .Values.podEnv }}
           env:
-            {{- toYaml . | nindent 12 }}
-          {{- end }}
+            {{- with .Values.podEnv }}
+              {{- toYaml . | nindent 12 }}
+            {{- end }}
+            {{- include "uptime-kuma.defaultPodEnv" . | nindent 12 }}
           ports:
             - name: http
-              containerPort: 3001
+              containerPort: {{ .Values.podPort }}
               protocol: TCP
           {{ if .Values.volume.enabled -}}
           volumeMounts:
@@ -55,7 +56,7 @@ spec:
           readinessProbe:
             httpGet:
               path: /
-              port: 3001
+              port: {{ .Values.podPort }}
               scheme: HTTP
           resources:
             {{- toYaml .Values.resources | nindent 12 }}

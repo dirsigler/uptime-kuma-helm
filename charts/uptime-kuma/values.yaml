@@ -27,12 +27,17 @@ serviceAccount:
   name: ""
 
 podAnnotations: {}
+
 podLabels: {}
   # app: uptime-kuma
-podEnv:
-  # a default port must be set. required by container
-  - name: "UPTIME_KUMA_PORT"
-    value: "3001"
+
+# -- environment variables to pass to the main pod container
+podEnv: {}
+  # - name: "UPTIME_KUMA_PORT"
+  #   value: "3001"
+
+# -- internal port configuration to use in main pod container
+podPort: 3001
 
 podSecurityContext: {}
   # fsGroup: 2000
@@ -47,6 +52,7 @@ securityContext: {}
 
 service:
   type: ClusterIP
+  # -- exposed service port for uptime-kuma, may be the same port as configured for `podPort`
   port: 3001
   annotations: {}
 
