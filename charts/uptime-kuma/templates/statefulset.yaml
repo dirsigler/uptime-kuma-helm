@@ -13,9 +13,6 @@ spec:
   selector:
     matchLabels:
       {{- include "uptime-kuma.selectorLabels" . | nindent 6 }}
-      {{- if .Values.podLabels }}
-{{ toYaml .Values.podLabels | indent 6 }}
-      {{- end }}
   template:
     metadata:
       {{- with .Values.podAnnotations }}
@@ -24,9 +21,6 @@ spec:
       {{- end }}
       labels:
         {{- include "uptime-kuma.selectorLabels" . | nindent 8 }}
-        {{- if .Values.podLabels }}
-{{ toYaml .Values.podLabels | indent 8 }}
-        {{- end }}
     spec:
       {{- with .Values.imagePullSecrets }}
       imagePullSecrets:
@@ -88,9 +82,9 @@ spec:
           - {{ .Values.volume.accessMode }}
         resources:
           requests:
-            storage: {{ .Values.volume.size }}
-        {{- with .Values.volume.storageClassName }}
-        storageClassName: {{ . }}
+            storage: {{ .Values.volume.size | quote }}
+        {{- if .Values.volume.storageClassName }}
+        storageClassName: {{ .Values.volume.storageClassName | quote }}
         {{- end }}
   {{- end -}}
 {{- end -}}

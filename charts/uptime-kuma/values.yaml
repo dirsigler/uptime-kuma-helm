@@ -32,7 +32,7 @@ podLabels: {}
   # app: uptime-kuma
 
 # -- environment variables to pass to the main pod container
-podEnv: {}
+podEnv: []
   # - name: "UPTIME_KUMA_PORT"
   #   value: "3001"
 
@@ -58,7 +58,7 @@ service:
 
 ingress:
   enabled: false
-  # className: ""
+  className: ""
   extraLabels: {}
     # vhost: uptime-kuma.company.corp
   annotations:
@@ -119,8 +119,7 @@ volume:
   enabled: true
   accessMode: ReadWriteOnce
   size: 4Gi
-  # If you want to use a storage class other than the default, uncomment this
-  # line and define the storage class name
-  # storageClassName:
+  # -- If you want to use a storage class other than the default define the storage class name
+  storageClassName: ""
   # Reuse your own pre-existing PVC.
   existingClaim: {}

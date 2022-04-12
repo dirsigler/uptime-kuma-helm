@@ -8,12 +8,12 @@ metadata:
     {{- include "uptime-kuma.labels" . | nindent 4 }}
 spec:
   accessModes:
-    - ReadWriteOnce
+    - {{ .Values.volume.accessMode }}
   resources:
     requests:
       storage: {{ .Values.volume.size | quote }}
-  {{- with .Values.volume.storageClassName }}
-  storageClassName: {{ . }}
+  {{- if .Values.volume.storageClassName }}
+  storageClassName: {{ .Values.volume.storageClassName | quote }}
   {{- end }}
 {{- end -}}
 {{- end -}}

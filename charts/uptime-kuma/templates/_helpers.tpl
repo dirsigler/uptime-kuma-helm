@@ -48,6 +48,9 @@ Selector labels
 {{- define "uptime-kuma.selectorLabels" -}}
 app.kubernetes.io/name: {{ include "uptime-kuma.name" . }}
 app.kubernetes.io/instance: {{ .Release.Name }}
+{{- if .Values.podLabels }}
+{{ toYaml .Values.podLabels }}
+{{- end }}
 {{- end }}
 
 {{/*
