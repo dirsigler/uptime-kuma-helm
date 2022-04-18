@@ -1,5 +1,13 @@
 {
   "extends": [
-    "config:base"
+    "config:base",
+    ":disableDependencyDashboard"
+  ],
+  "assignees": ["dirsigler"],
+  "packageRules": [
+    {
+        "matchDatasources": ["docker"],
+        "matchUpdateTypes": ["minor"]
+    }
   ]
 }
