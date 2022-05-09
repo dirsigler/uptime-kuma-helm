@@ -55,6 +55,7 @@ A self-hosted Monitoring tool like "Uptime-Robot".
 | serviceAccount.annotations | object | `{}` |  |
 | serviceAccount.create | bool | `false` |  |
 | serviceAccount.name | string | `""` |  |
+| strategy | list | `[]` |  |
 | tolerations | list | `[]` |  |
 | useDeploy | bool | `true` |  |
 | volume.accessMode | string | `"ReadWriteOnce"` |  |
