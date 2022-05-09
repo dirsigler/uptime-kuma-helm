@@ -1,6 +1,6 @@
 # uptime-kuma
 
-![Version: 2.3.5](https://img.shields.io/badge/Version-2.3.5-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 1.15.1](https://img.shields.io/badge/AppVersion-1.15.1-informational?style=flat-square)
+![Version: 2.3.6](https://img.shields.io/badge/Version-2.3.6-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 1.15.1](https://img.shields.io/badge/AppVersion-1.15.1-informational?style=flat-square)
 
 A self-hosted Monitoring tool like "Uptime-Robot".
 
@@ -55,7 +55,7 @@ A self-hosted Monitoring tool like "Uptime-Robot".
 | serviceAccount.annotations | object | `{}` |  |
 | serviceAccount.create | bool | `false` |  |
 | serviceAccount.name | string | `""` |  |
-| strategy | list | `[]` |  |
+| strategy.type | string | `"Recreate"` |  |
 | tolerations | list | `[]` |  |
 | useDeploy | bool | `true` |  |
 | volume.accessMode | string | `"ReadWriteOnce"` |  |
