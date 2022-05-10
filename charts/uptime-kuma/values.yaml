@@ -119,5 +119,5 @@ volume:
   # Reuse your own pre-existing PVC.
   existingClaim: {}
 
-strategy: 
+strategy:
   type: Recreate
