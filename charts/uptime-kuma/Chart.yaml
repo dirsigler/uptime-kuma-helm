@@ -11,4 +11,4 @@ name: uptime-kuma
 sources:
   - https://github.com/louislam/uptime-kuma
 type: application
-version: 2.3.5
+version: 2.3.6
