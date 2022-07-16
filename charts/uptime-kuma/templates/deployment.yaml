@@ -56,11 +56,14 @@ spec:
               command:
                 - node
                 - extra/healthcheck.js
+            timeoutSeconds: {{ .Values.livenessProbe.timeoutSeconds}}
+            initialDelaySeconds: {{ .Values.livenessProbe.initialDelaySeconds}}
           readinessProbe:
             httpGet:
               path: /
               port: 3001
               scheme: HTTP
+            initialDelaySeconds: {{ .Values.readinessProbe.initialDelaySeconds}}
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
       {{- with .Values.nodeSelector }}
