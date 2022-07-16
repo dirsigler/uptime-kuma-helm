@@ -109,6 +109,13 @@ tolerations: []
 
 affinity: {}
 
+livenessProbe:
+  timeoutSeconds: 2
+  initialDelaySeconds: 15
+
+readinessProbe:
+  initialDelaySeconds: 5
+
 volume:
   enabled: true
   accessMode: ReadWriteOnce
