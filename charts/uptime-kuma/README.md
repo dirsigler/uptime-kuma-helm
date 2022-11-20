@@ -51,6 +51,7 @@ A self-hosted Monitoring tool like "Uptime-Robot".
 | securityContext | object | `{}` |  |
 | service.annotations | object | `{}` |  |
 | service.port | int | `3001` |  |
+| service.nodePort | int | `` |  |
 | service.type | string | `"ClusterIP"` |  |
 | serviceAccount.annotations | object | `{}` |  |
 | serviceAccount.create | bool | `false` |  |
