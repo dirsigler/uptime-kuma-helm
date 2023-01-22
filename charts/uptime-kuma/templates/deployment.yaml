@@ -54,8 +54,7 @@ spec:
           livenessProbe:
             exec:
               command:
-                - node
-                - extra/healthcheck.js
+                - /healthcheck.sh
             timeoutSeconds: {{ .Values.livenessProbe.timeoutSeconds}}
             initialDelaySeconds: {{ .Values.livenessProbe.initialDelaySeconds}}
           readinessProbe:
