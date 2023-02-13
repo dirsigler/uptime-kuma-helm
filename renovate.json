@@ -1,13 +1,20 @@
 {
+  "$schema": "https://docs.renovatebot.com/renovate-schema.json",
   "extends": [
     "config:base",
     ":disableDependencyDashboard"
   ],
   "assignees": ["dirsigler"],
+  "enabledManagers": [
+    "helmv3",
+    "helm-values",
+    "github-actions",
+    "pre-commit"
+  ],
   "packageRules": [
     {
-        "matchDatasources": ["docker"],
-        "matchUpdateTypes": ["minor"]
+      "matchDatasources": ["docker"],
+      "matchUpdateTypes": ["minor"]
     }
   ]
 }
