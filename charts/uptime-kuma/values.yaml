@@ -111,10 +111,12 @@ tolerations: []
 affinity: {}
 
 livenessProbe:
+  enabled: true
   timeoutSeconds: 2
   initialDelaySeconds: 15
 
 readinessProbe:
+  enabled: true
   initialDelaySeconds: 5
 
 volume:
