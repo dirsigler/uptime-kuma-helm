@@ -39,6 +39,7 @@ A self-hosted Monitoring tool like "Uptime-Robot".
 | ingress.hosts[0].paths[0].path | string | `"/"` |  |
 | ingress.hosts[0].paths[0].pathType | string | `"ImplementationSpecific"` |  |
 | ingress.tls | list | `[]` |  |
+| livenessProbe.enabled | bool | `true` |  |
 | livenessProbe.initialDelaySeconds | int | `15` |  |
 | livenessProbe.timeoutSeconds | int | `2` |  |
 | nameOverride | string | `""` |  |
@@ -47,7 +48,8 @@ A self-hosted Monitoring tool like "Uptime-Robot".
 | podEnv[0].name | string | `"UPTIME_KUMA_PORT"` |  |
 | podEnv[0].value | string | `"3001"` |  |
 | podLabels | object | `{}` |  |
-| podSecurityContext | object | `{}` |  |
+| podSecurityContext | object | `{}` |  |#
+| readinessProbe.enabled | bool | `true` |  |
 | readinessProbe.initialDelaySeconds | int | `5` |  |
 | replicaCount | int | `1` |  |
 | resources | object | `{}` |  |
