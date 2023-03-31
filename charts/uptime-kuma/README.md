@@ -66,7 +66,7 @@ A self-hosted Monitoring tool like "Uptime-Robot".
 | useDeploy | bool | `true` |  |
 | volume.accessMode | string | `"ReadWriteOnce"` |  |
 | volume.enabled | bool | `true` |  |
-| volume.existingClaim | object | `{}` |  |
+| volume.existingClaim | string | `""` |  |
 | volume.size | string | `"4Gi"` |  |
 
 ----------------------------------------------
