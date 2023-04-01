@@ -127,7 +127,7 @@ volume:
   # line and define the storage class name
   # storageClassName:
   # Reuse your own pre-existing PVC.
-  existingClaim: {}
+  existingClaim: ""
 
 strategy:
   type: Recreate
