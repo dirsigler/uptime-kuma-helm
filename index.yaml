@@ -3,6 +3,23 @@ entries:
   uptime-kuma:
   - apiVersion: v2
     appVersion: 1.21.0
+    created: "2023-04-01T11:56:48.440787104Z"
+    description: A self-hosted Monitoring tool like "Uptime-Robot".
+    digest: 2d0663efb28bde25fdfb94ecb1c224f03588aa5aa807b7631cb665c77838599b
+    home: https://github.com/dirsigler/uptime-kuma-helm
+    icon: https://raw.githubusercontent.com/louislam/uptime-kuma/master/public/icon.png
+    maintainers:
+    - email: dennis@irsigler.dev
+      name: dirsigler
+    name: uptime-kuma
+    sources:
+    - https://github.com/louislam/uptime-kuma
+    type: application
+    urls:
+    - https://github.com/dirsigler/uptime-kuma-helm/releases/download/uptime-kuma-2.7.10/uptime-kuma-2.7.10.tgz
+    version: 2.7.10
+  - apiVersion: v2
+    appVersion: 1.21.0
     created: "2023-03-27T15:18:39.714734327Z"
     description: A self-hosted Monitoring tool like "Uptime-Robot".
     digest: 3596bf8bfa6ae7adfe07af6685ffaf108987f33a85261e5fdcc5faf38ccb04ff
@@ -736,4 +753,4 @@ entries:
     urls:
     - https://github.com/dirsigler/uptime-kuma-helm/releases/download/uptime-kuma-0.1.0/uptime-kuma-0.1.0.tgz
     version: 0.1.0
-generated: "2023-03-27T15:18:39.715209525Z"
+generated: "2023-04-01T11:56:48.441188699Z"
