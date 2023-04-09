@@ -47,7 +47,6 @@ A self-hosted Monitoring tool like "Uptime-Robot".
 | podSecurityContext | object | `{}` |  |#
 | readinessProbe.enabled | bool | `true` |  |
 | readinessProbe.initialDelaySeconds | int | `5` |  |
-| replicaCount | int | `1` |  |
 | resources | object | `{}` |  |
 | securityContext | object | `{}` |  |
 | service.annotations | object | `{}` |  |
