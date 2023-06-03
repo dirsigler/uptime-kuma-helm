@@ -3,7 +3,8 @@ name: Lint and Test Charts
 on:
   pull_request:
     paths:
-      - 'charts/**'
+      - 'charts/templates/**'
+      - 'charts/Chart.yaml'
 
 jobs:
   lint-test:
