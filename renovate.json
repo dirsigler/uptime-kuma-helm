@@ -2,19 +2,42 @@
   "$schema": "https://docs.renovatebot.com/renovate-schema.json",
   "extends": [
     "config:base",
-    ":disableDependencyDashboard"
+    ":disableDependencyDashboard",
+    ":enablePreCommit"
   ],
   "assignees": ["dirsigler"],
   "enabledManagers": [
     "helmv3",
     "helm-values",
-    "github-actions",
-    "pre-commit"
+    "github-actions"
   ],
   "packageRules": [
     {
       "matchDatasources": ["docker"],
-      "matchUpdateTypes": ["minor"]
+      "matchUpdateTypes": ["minor"],
+      "upgradeVersions": true,
+      "groupName": "docker",
+      "versioning": "docker",
+      "automerge": false,
+      "datasourceRules": [
+        {
+          "matchDatasources": ["helm"],
+          "automerge": false,
+          "updateLabels": ["AppVersion"],
+          "bumpChart": true,
+          "groupName": "helm"
+        },
+        {
+          "matchDatasources": ["github-actions"],
+          "automerge": false,
+          "groupName": "github-actions"
+        },
+        {
+          "matchDatasources": ["docker"],
+          "matchUpdateTypes": ["minor", "patch"],
+          "automerge": false
+        }
+      ]
     }
   ]
 }
