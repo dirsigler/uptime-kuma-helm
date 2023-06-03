@@ -1,6 +1,6 @@
 # uptime-kuma
 
-![Version: 2.5.4](https://img.shields.io/badge/Version-2.5.4-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 1.19.4](https://img.shields.io/badge/AppVersion-1.19.4-informational?style=flat-square)
+![Version: 2.9.2](https://img.shields.io/badge/Version-2.9.2-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 1.21.3](https://img.shields.io/badge/AppVersion-1.21.3-informational?style=flat-square)
 
 A self-hosted Monitoring tool like "Uptime-Robot".
 
@@ -24,7 +24,7 @@ A self-hosted Monitoring tool like "Uptime-Robot".
 | fullnameOverride | string | `""` |  |
 | image.pullPolicy | string | `"IfNotPresent"` |  |
 | image.repository | string | `"louislam/uptime-kuma"` |  |
-| image.tag | string | `"1.19.4-debian"` |  |
+| image.tag | string | `"1.21.3-debian"` |  |
 | imagePullSecrets | list | `[]` |  |
 | ingress.annotations."nginx.ingress.kubernetes.io/proxy-read-timeout" | string | `"3600"` |  |
 | ingress.annotations."nginx.ingress.kubernetes.io/proxy-send-timeout" | string | `"3600"` |  |
@@ -44,7 +44,7 @@ A self-hosted Monitoring tool like "Uptime-Robot".
 | podEnv[0].name | string | `"UPTIME_KUMA_PORT"` |  |
 | podEnv[0].value | string | `"3001"` |  |
 | podLabels | object | `{}` |  |
-| podSecurityContext | object | `{}` |  |#
+| podSecurityContext | object | `{}` |  |
 | readinessProbe.enabled | bool | `true` |  |
 | readinessProbe.initialDelaySeconds | int | `5` |  |
 | resources | object | `{}` |  |
