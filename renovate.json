@@ -5,7 +5,12 @@
     ":disableDependencyDashboard",
     ":enablePreCommit"
   ],
+  "timezone": "Europe/Berlin",
+  "schedule": [
+    "at any time"
+  ],
   "assignees": ["dirsigler"],
+  "reviewers": ["dirsigler"],
   "enabledManagers": [
     "helmv3",
     "helm-values",
@@ -13,31 +18,17 @@
   ],
   "packageRules": [
     {
-      "matchDatasources": ["docker"],
-      "matchUpdateTypes": ["minor"],
-      "upgradeVersions": true,
-      "groupName": "docker",
-      "versioning": "docker",
-      "automerge": false,
-      "datasourceRules": [
-        {
-          "matchDatasources": ["helm"],
-          "automerge": false,
-          "updateLabels": ["AppVersion"],
-          "bumpChart": true,
-          "groupName": "helm"
-        },
-        {
-          "matchDatasources": ["github-actions"],
-          "automerge": false,
-          "groupName": "github-actions"
-        },
-        {
-          "matchDatasources": ["docker"],
-          "matchUpdateTypes": ["minor", "patch"],
-          "automerge": false
-        }
-      ]
+      "matchManagers": [
+        "helmv3",
+        "helm-values",
+        "github-actions"
+      ],
+      "matchUpdateTypes": [
+        "minor",
+        "patch"
+      ],
+      "groupName": "all",
+      "automerge": false
     }
   ]
 }
