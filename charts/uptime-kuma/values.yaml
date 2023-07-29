@@ -122,3 +122,30 @@ volume:
 
 strategy:
   type: Recreate
+
+# Prometheus ServiceMonitor configuration
+serviceMonitor:
+  enabled: false
+  # -- Scrape interval. If not set, the Prometheus default scrape interval is used.
+  interval: 60s
+  # -- Timeout if metrics can't be retrieved in given time interval
+  scrapeTimeout: 10s
+  # -- Scheme to use when scraping, e.g. http (default) or https.
+  scheme: ~
+  # -- TLS configuration to use when scraping, only applicable for scheme https.
+  tlsConfig: {}
+  # -- Prometheus [RelabelConfigs] to apply to samples before scraping
+  relabelings: []
+  # -- Prometheus [MetricRelabelConfigs] to apply to samples before ingestion
+  metricRelabelings: []
+  # -- Prometheus ServiceMonitor selector, only select Prometheus's with these
+  # labels (if not set, select any Prometheus)
+  selector: {}
+
+  # -- Namespace where the ServiceMonitor resource should be created, default is
+  # the same as the release namespace
+  namespace: ~
+  # -- Additional labels to add to the ServiceMonitor
+  additionalLabels: {}
+  # -- Additional annotations to add to the ServiceMonitor
+  annotations: {}
