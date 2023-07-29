@@ -56,6 +56,17 @@ A self-hosted Monitoring tool like "Uptime-Robot".
 | serviceAccount.annotations | object | `{}` |  |
 | serviceAccount.create | bool | `false` |  |
 | serviceAccount.name | string | `""` |  |
+| serviceMonitor.additionalLabels | object | `{}` | Additional labels to add to the ServiceMonitor |
+| serviceMonitor.annotations | object | `{}` | Additional annotations to add to the ServiceMonitor |
+| serviceMonitor.enabled | bool | `false` |  |
+| serviceMonitor.interval | string | `"60s"` | Scrape interval. If not set, the Prometheus default scrape interval is used. |
+| serviceMonitor.metricRelabelings | list | `[]` | Prometheus [MetricRelabelConfigs] to apply to samples before ingestion |
+| serviceMonitor.namespace | string | `nil` | Namespace where the ServiceMonitor resource should be created, default is the same as the release namespace |
+| serviceMonitor.relabelings | list | `[]` | Prometheus [RelabelConfigs] to apply to samples before scraping |
+| serviceMonitor.scheme | string | `nil` | Scheme to use when scraping, e.g. http (default) or https. |
+| serviceMonitor.scrapeTimeout | string | `"10s"` | Timeout if metrics can't be retrieved in given time interval |
+| serviceMonitor.selector | object | `{}` | Prometheus ServiceMonitor selector, only select Prometheus's with these labels (if not set, select any Prometheus) |
+| serviceMonitor.tlsConfig | object | `{}` | TLS configuration to use when scraping, only applicable for scheme https. |
 | strategy.type | string | `"Recreate"` |  |
 | tolerations | list | `[]` |  |
 | useDeploy | bool | `true` |  |
