@@ -3,8 +3,8 @@ name: Lint and Test Charts
 on:
   pull_request:
     paths:
-      - 'charts/templates/**'
-      - 'charts/Chart.yaml'
+      - 'charts/uptime-kuma/templates/**'
+      - 'charts/uptime-kuma/Chart.yaml'
 
 jobs:
   lint-test:
