@@ -12,7 +12,7 @@ spec:
     matchLabels:
       {{- include "uptime-kuma.selectorLabels" . | nindent 6 }}
       {{- if .Values.podLabels }}
-{{ toYaml .Values.podLabels | indent 6 }}
+        {{- toYaml .Values.podLabels | nindent 6 }}
       {{- end }}
   template:
     metadata:
@@ -23,7 +23,7 @@ spec:
       labels:
         {{- include "uptime-kuma.selectorLabels" . | nindent 8 }}
         {{- if .Values.podLabels }}
-{{ toYaml .Values.podLabels | indent 8 }}
+          {{- toYaml .Values.podLabels | nindent 8 }}
         {{- end }}
     spec:
       {{- with .Values.imagePullSecrets }}
@@ -52,19 +52,23 @@ spec:
           volumeMounts:
             - mountPath: /app/data
               name: storage
-          {{ end }}
+          {{- end }}
+          {{- if .Values.livenessProbe.enabled }}
           livenessProbe:
             exec:
               command:
                 - extra/healthcheck
             timeoutSeconds: {{ .Values.livenessProbe.timeoutSeconds}}
             initialDelaySeconds: {{ .Values.livenessProbe.initialDelaySeconds}}
+          {{- end }}
+          {{- if .Values.readinessProbe.enabled }}
           readinessProbe:
             httpGet:
               path: /
               port: 3001
               scheme: HTTP
             initialDelaySeconds: {{ .Values.readinessProbe.initialDelaySeconds}}
+          {{- end }}
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
       {{- with .Values.nodeSelector }}
