@@ -5,7 +5,7 @@ on:
     branches:
       - main
     paths:
-      - 'charts/uptime-kuma/Chart.yaml'
+      - "charts/uptime-kuma/Chart.yaml"
 
 jobs:
   release:
