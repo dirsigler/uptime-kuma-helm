@@ -28,7 +28,6 @@ jobs:
 
       - name: Prepare GPG Key
         run: |
-          IFS=""
           base64 -d <<< "$GPG_KEYRING_BASE64" > $HOME/secring.gpg
           echo "$GPG_PASSPHRASE" > $HOME/passphrase.txt
 
