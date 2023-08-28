@@ -26,16 +26,16 @@ jobs:
         with:
           version: v3.4.0
 
-      - name: Prepare GPG Key
-        run: |
-          base64 -d <<< "$GPG_KEYRING_BASE64" > $HOME/secring.gpg
-          echo "$GPG_PASSPHRASE" > $HOME/passphrase.txt
+      # - name: Prepare GPG Key
+      #   run: |
+      #     base64 -d <<< "$GPG_KEYRING_BASE64" > $HOME/secring.gpg
+      #     echo "$GPG_PASSPHRASE" > $HOME/passphrase.txt
 
-          echo "CR_KEYRING=$HOME/secring.gpg >> "$GITHUB_ENV"
-          echo "CR_PASSPHRASE_FILE=$HOME/passphrase.txt" >> "$GITHUB_ENV"
-        env:
-          GPG_KEYRING_BASE64: "${{ secrets.GPG_KEYRING_BASE64 }}"
-          GPG_PASSPHRASE: "${{ secrets.GPG_PASSPHRASE}}"
+      #     echo "CR_KEYRING=$HOME/secring.gpg >> "$GITHUB_ENV"
+      #     echo "CR_PASSPHRASE_FILE=$HOME/passphrase.txt" >> "$GITHUB_ENV"
+      #   env:
+      #     GPG_KEYRING_BASE64: "${{ secrets.GPG_KEYRING_BASE64 }}"
+      #     GPG_PASSPHRASE: "${{ secrets.GPG_PASSPHRASE}}"
 
       - name: Run chart-releaser
         uses: helm/chart-releaser-action@v1.5.0

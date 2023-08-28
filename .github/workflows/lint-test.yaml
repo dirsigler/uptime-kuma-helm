@@ -43,7 +43,7 @@ jobs:
           fi
 
       - name: Run chart-testing (lint)
-        run: ct lint --config .github/ct.yaml --target-branch main
+        run: ct lint --config ".github/configs/ct.yaml" --target-branch main
 
       - name: Create kind ${{ matrix.k8s }} cluster
         uses: helm/kind-action@v1.8.0
@@ -52,4 +52,4 @@ jobs:
           node_image: kindest/node:${{ matrix.k8s }}
 
       - name: Run chart-testing (install)
-        run: ct install --config .github/ct.yaml --target-branch main
+        run: ct install --config ".github/configs/ct.yaml" --target-branch main
