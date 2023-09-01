@@ -69,6 +69,7 @@ A self-hosted Monitoring tool like "Uptime-Robot".
 | serviceMonitor.scrapeTimeout | string | `"10s"` | Timeout if metrics can't be retrieved in given time interval |
 | serviceMonitor.selector | object | `{}` | Prometheus ServiceMonitor selector, only select Prometheus's with these labels (if not set, select any Prometheus) |
 | serviceMonitor.tlsConfig | object | `{}` | TLS configuration to use when scraping, only applicable for scheme https. |
+| serviceMonitor.basicAuth | object | `{}` | BasicAuth configuration to use when scraping.
 | strategy.type | string | `"Recreate"` |  |
 | tolerations | list | `[]` |  |
 | useDeploy | bool | `true` |  |
