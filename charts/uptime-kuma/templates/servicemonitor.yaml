@@ -43,4 +43,12 @@ spec:
     metricRelabelings:
       {{- toYaml . | nindent 6 }}
     {{- end }}
+    {{- with .Values.serviceMonitor.basicAuth }}
+    basicAuth:
+    {{- range $key, $value := . }}
+      {{ $key }}:
+        name: {{ include "uptime-kuma.fullname" $ }}-metrics-basic-auth
+        key: {{ $key }}
+    {{- end }}
+    {{- end }}
 {{- end }}
