@@ -150,9 +150,9 @@ serviceMonitor:
   # -- Additional annotations to add to the ServiceMonitor
   annotations: {}
 
-  # -- BasicAuth credentials for scraping metrics, use API token
+  # -- BasicAuth credentials for scraping metrics, use API token and any string for username
   # basicAuth:
-  #   # username: ""
+  #   username: "metrics"
   #   password: ""
 
 # -- Use this option to set a custom DNS policy to the created deployment
