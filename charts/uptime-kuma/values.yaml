@@ -25,17 +25,20 @@ serviceAccount:
   name: ""
 
 podAnnotations: {}
-podLabels: {}
+podLabels:
+  {}
   # app: uptime-kuma
 podEnv:
   # a default port must be set. required by container
   - name: "UPTIME_KUMA_PORT"
     value: "3001"
 
-podSecurityContext: {}
+podSecurityContext:
+  {}
   # fsGroup: 2000
 
-securityContext: {}
+securityContext:
+  {}
   # capabilities:
   #   drop:
   #   - ALL
@@ -52,7 +55,8 @@ service:
 ingress:
   enabled: false
   # className: ""
-  extraLabels: {}
+  extraLabels:
+    {}
     # vhost: uptime-kuma.company.corp
   annotations:
     nginx.ingress.kubernetes.io/proxy-read-timeout: "3600"
@@ -83,7 +87,8 @@ ingress:
     #   hosts:
     #     - chart-example.local
 
-resources: {}
+resources:
+  {}
   # We usually recommend not to specify default resources and to leave this as a conscious
   # choice for the user. This also increases chances charts run on environments with little
   # resources, such as Minikube. If you do want to specify resources, uncomment the following
@@ -119,6 +124,23 @@ volume:
   # storageClassName:
   # Reuse your own pre-existing PVC.
   existingClaim: ""
+
+# -- A list of additional volumes to be added to the pod
+additionalVolumes:
+  []
+  # - name: "additional-certificates"
+  #   configMap:
+  #     name: "additional-certificates"
+  #     optional: true
+  #     defaultMode: 420
+
+# -- A list of additional volumeMounts to be added to the pod
+additionalVolumeMounts:
+  []
+  # - name: "additional-certificates"
+  #   mountPath: "/etc/ssl/certs/additional/additional-ca.pem"
+  #   readOnly: true
+  #   subPath: "additional-ca.pem"
 
 strategy:
   type: Recreate

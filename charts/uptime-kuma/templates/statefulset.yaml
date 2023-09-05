@@ -55,10 +55,15 @@ spec:
             - name: http
               containerPort: 3001
               protocol: TCP
-          {{ if .Values.volume.enabled -}}
+          {{ if or .Values.volume.enabled .Values.additionalVolumeMounts -}}
           volumeMounts:
+            {{- if .Values.volume.enabled }}
             - mountPath: /app/data
               name: storage
+            {{- end -}}
+            {{ with .Values.additionalVolumeMounts }}
+              {{- toYaml . | nindent 12 }}
+            {{- end }}
           {{- end }}
           {{- if .Values.livenessProbe.enabled }}
           livenessProbe:
@@ -88,6 +93,10 @@ spec:
       {{- end }}
       {{- with .Values.tolerations }}
       tolerations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.additionalVolumes }}
+      volumes:
         {{- toYaml . | nindent 8 }}
       {{- end }}
   {{ if .Values.volume.enabled -}}
