@@ -57,10 +57,15 @@ spec:
             - name: http
               containerPort: 3001
               protocol: TCP
-          {{ if .Values.volume.enabled -}}
+          {{ if or .Values.volume.enabled .Values.additionalVolumeMounts -}}
           volumeMounts:
+            {{- if .Values.volume.enabled }}
             - mountPath: /app/data
               name: storage
+            {{- end -}}
+            {{ with .Values.additionalVolumeMounts }}
+              {{- toYaml . | nindent 12 }}
+            {{- end }}
           {{- end }}
           {{- if .Values.livenessProbe.enabled }}
           livenessProbe:
@@ -92,8 +97,9 @@ spec:
       tolerations:
         {{- toYaml . | nindent 8 }}
       {{- end }}
-      {{ if .Values.volume.enabled -}}
+      {{ if or .Values.volume.enabled .Values.additionalVolumes -}}
       volumes:
+        {{- if .Values.volume.enabled }}
       - name: storage
         persistentVolumeClaim:
           {{- if not .Values.volume.existingClaim }}
@@ -101,5 +107,9 @@ spec:
           {{- else }}
           claimName: {{ .Values.volume.existingClaim }}
           {{- end }}
+        {{- end -}}
+        {{- with .Values.additionalVolumes }}
+          {{- toYaml . | nindent 6 }}
+        {{- end }}
       {{- end -}}
 {{- end -}}
