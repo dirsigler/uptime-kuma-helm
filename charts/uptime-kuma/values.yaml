@@ -6,7 +6,7 @@ image:
   repository: louislam/uptime-kuma
   pullPolicy: IfNotPresent
   # Overrides the image tag whose default is the chart appVersion.
-  tag: "1.23.1-debian"
+  tag: "1.23.2-debian"
 
 imagePullSecrets: []
 nameOverride: ""
