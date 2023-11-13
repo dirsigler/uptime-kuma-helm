@@ -1,13 +1,13 @@
 repos:
   - repo: https://github.com/gruntwork-io/pre-commit
-    rev: v0.1.22
+    rev: v0.1.23
     hooks:
       - id: helmlint
   - repo: https://github.com/norwoodj/helm-docs
-    rev: v1.11.0
+    rev: v1.11.3
     hooks:
       - id: helm-docs
   - repo: https://github.com/renovatebot/pre-commit-hooks
-    rev: 35.110.1
+    rev: 37.52.0
     hooks:
       - id: renovate-config-validator
