@@ -71,6 +71,7 @@ A self-hosted Monitoring tool like "Uptime-Robot".
 | service.nodePort | string | `nil` |  |
 | service.port | int | `3001` |  |
 | service.type | string | `"ClusterIP"` |  |
+| service.loadBalancerIP | string | `""` |  |
 | serviceAccount.annotations | object | `{}` |  |
 | serviceAccount.create | bool | `false` |  |
 | serviceAccount.name | string | `""` |  |
