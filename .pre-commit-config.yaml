@@ -7,7 +7,3 @@ repos:
     rev: v1.12.0
     hooks:
       - id: helm-docs
-  - repo: https://github.com/renovatebot/pre-commit-hooks
-    rev: 37.152.1
-    hooks:
-      - id: renovate-config-validator
