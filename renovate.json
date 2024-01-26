@@ -11,7 +11,7 @@
   },
   "packageRules": [
     {
-      "matchManagers": ["pre-commit", "helmv3", "github-actions"],
+      "matchManagers": ["pre-commit", "helmv3", "helm-values", "github-actions"],
       "matchUpdateTypes": ["minor", "patch", "pin", "digest"],
       "groupName": "all",
       "automerge": false
