@@ -4,6 +4,6 @@ repos:
     hooks:
       - id: helmlint
   - repo: https://github.com/norwoodj/helm-docs
-    rev: v1.13.0
+    rev: v1.13.1
     hooks:
       - id: helm-docs
