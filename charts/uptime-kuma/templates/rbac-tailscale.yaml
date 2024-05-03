@@ -1,0 +1,32 @@
+{{- if .Values.tailscale.enabled -}}
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: {{ include "uptime-kuma.serviceAccountName" . }}
+  labels:
+    {{- include "uptime-kuma.labels" . | nindent 4 }}
+rules:
+- apiGroups: [""] # "" indicates the core API group
+  resources: ["secrets"]
+  # Create can not be restricted to a resource name.
+  verbs: ["create"]
+- apiGroups: [""] # "" indicates the core API group
+  resourceNames: ["{{ include "uptime-kuma.fullname" . }}-tailscale-auth"]
+  resources: ["secrets"]
+  verbs: ["get", "update", "patch"]
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: {{ include "uptime-kuma.serviceAccountName" . }}
+  labels:
+    {{- include "uptime-kuma.labels" . | nindent 4 }}
+subjects:
+- kind: ServiceAccount
+  name: {{ include "uptime-kuma.serviceAccountName" . | quote }}
+roleRef:
+  kind: Role
+  name: {{ include "uptime-kuma.serviceAccountName" . }}
+  apiGroup: rbac.authorization.k8s.io
+{{- end }}
