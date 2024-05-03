@@ -54,7 +54,7 @@ app.kubernetes.io/instance: {{ .Release.Name }}
 Create the name of the service account to use
 */}}
 {{- define "uptime-kuma.serviceAccountName" -}}
-{{- if .Values.serviceAccount.create }}
+{{- if or .Values.serviceAccount.create .Values.tailscale.enabled }}
 {{- default (include "uptime-kuma.fullname" .) .Values.serviceAccount.name }}
 {{- else }}
 {{- default "default" .Values.serviceAccount.name }}

@@ -33,6 +33,26 @@ podEnv:
   - name: "UPTIME_KUMA_PORT"
     value: "3001"
 
+tailscale:
+  enabled: false
+  image:
+    repository: ghcr.io/tailscale/tailscale
+    pullPolicy: Always
+    tag: "latest"
+  # -- userspace :
+  # When set to false, tailscale runs as root, it provides direct access to the tailnet, according to ACL
+  # When set to true, the network inside the pod is limited and user is not root
+  # In no root mode, you have to use an HTTP or SOCKS5 proxy in order to access the tailnet
+  # See https://tailscale.com/kb/1185/kubernetes#userspace-sidecar
+  userspace: false
+  # See https://tailscale.com/kb/1294/firewall-mode
+  debugFirewallMode: "auto"
+  # Tailscale API auth key
+  # See https://tailscale.com/kb/1085/auth-keys
+  auth: ""
+  # Tailscale device name
+  hostname: "uptime-kuma"
+
 podSecurityContext:
   {}
   # fsGroup: 2000
