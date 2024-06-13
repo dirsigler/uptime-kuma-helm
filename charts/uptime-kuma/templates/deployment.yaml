@@ -71,6 +71,7 @@ spec:
           livenessProbe:
             exec:
               command:
+                - node
                 - extra/healthcheck
             timeoutSeconds: {{ .Values.livenessProbe.timeoutSeconds}}
             initialDelaySeconds: {{ .Values.livenessProbe.initialDelaySeconds}}
