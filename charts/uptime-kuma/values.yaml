@@ -108,12 +108,33 @@ affinity: {}
 
 livenessProbe:
   enabled: true
+  failureThreshold: 3
+  # Uptime-Kuma recommends to configure a delay of 180 seconds until the server fully started.
+  # https://github.com/louislam/uptime-kuma/blob/ae224f9e188b1fc32ed8729818710975589cdce7/extra/healthcheck.go#L3
+  initialDelaySeconds: 180
+  periodSeconds: 10
+  successThreshold: 1
   timeoutSeconds: 2
-  initialDelaySeconds: 15
+  # The NodeJS Version of this Healthcheck is no longer supported, therefore we don't specify a node command.
+  # https://github.com/louislam/uptime-kuma/blob/ae224f9e188b1fc32ed8729818710975589cdce7/extra/healthcheck.js#L6
+  exec:
+    command:
+      - "extra/healthcheck"
 
 readinessProbe:
   enabled: true
-  initialDelaySeconds: 5
+  initialDelaySeconds: 10
+  periodSeconds: 10
+  timeoutSeconds: 1
+  failureThreshold: 3
+  successThreshold: 1
+  exec:
+    command: []
+  httpGet:
+    path: /
+    port: 3001
+    scheme: HTTP
+    httpHeaders: []
 
 volume:
   enabled: true
