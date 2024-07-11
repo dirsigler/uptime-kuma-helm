@@ -29,6 +29,7 @@ spec:
           {{- toYaml .Values.podLabels | nindent 8 }}
         {{- end }}
     spec:
+      automountServiceAccountToken: {{ include "uptime-kuma.automountServiceAccountToken" . }}
       {{- with .Values.imagePullSecrets }}
       imagePullSecrets:
         {{- toYaml . | nindent 8 }}
