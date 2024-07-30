@@ -1,6 +1,6 @@
 # uptime-kuma
 
-![Version: 2.19.2](https://img.shields.io/badge/Version-2.19.2-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 1.23.13](https://img.shields.io/badge/AppVersion-1.23.13-informational?style=flat-square)
+![Version: 2.20.0](https://img.shields.io/badge/Version-2.20.0-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 1.23.13](https://img.shields.io/badge/AppVersion-1.23.13-informational?style=flat-square)
 
 A self-hosted Monitoring tool like "Uptime-Robot".
 
@@ -85,6 +85,14 @@ A self-hosted Monitoring tool like "Uptime-Robot".
 | serviceMonitor.selector | object | `{}` | Prometheus ServiceMonitor selector, only select Prometheus's with these labels (if not set, select any Prometheus) |
 | serviceMonitor.tlsConfig | object | `{}` | TLS configuration to use when scraping, only applicable for scheme https. |
 | strategy.type | string | `"Recreate"` |  |
+| tailscale.auth | string | `""` | Tailscale API auth key. See [Tailscale auth-keys](https://tailscale.com/kb/1085/auth-keys) |
+| tailscale.debugFirewallMode | string | `"auto"` | See [Tailscale firewall-mode](https://tailscale.com/kb/1294/firewall-mode) |
+| tailscale.enabled | bool   | `false` |  |
+| tailscale.hostname | string | `"uptime-kuma"` | Tailscale device name |
+| tailscale.pullPolicy | string | `"Always"` |  |
+| tailscale.repository | string | `"ghcr.io/tailscale/tailscale"` |  |
+| tailscale.tag | string | `"latest"` |  |
+| tailscale.userspace | bool   | `false` | Set to `false` to run tailscale as root, this allows direct access to tailnet. See [Tailscale #userspace-sidecar](https://tailscale.com/kb/1185/kubernetes#userspace-sidecar) |
 | tolerations | list | `[]` |  |
 | useDeploy | bool | `true` |  |
 | volume.accessMode | string | `"ReadWriteOnce"` |  |

@@ -107,6 +107,36 @@ spec:
             {{- end }}
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
+        {{- if .Values.tailscale.enabled }}
+        - name: ts-sidecar
+          imagePullPolicy: {{ .Values.tailscale.image.pullPolicy }}
+          image: "{{ .Values.tailscale.image.repository }}:{{ .Values.tailscale.image.tag }}"
+          securityContext:
+            {{- if .Values.tailscale.userspace }}
+            runAsUser: 1000
+            runAsGroup: 1000
+            {{- else }}
+            capabilities:
+              add:
+                - NET_ADMIN
+            {{- end }}
+          env:
+            - name: TS_HOSTNAME
+              value: {{ .Values.tailscale.hostname | quote}}
+            # Store the state in a k8s secret
+            - name: TS_KUBE_SECRET
+              value: "{{ include "uptime-kuma.fullname" . }}-tailscale-auth"
+            - name: TS_USERSPACE
+              value: {{ .Values.tailscale.userspace | quote }}
+            - name: TS_DEBUG_FIREWALL_MODE
+              value: {{ .Values.tailscale.debugFirewallMode | quote }}
+            - name: TS_AUTHKEY
+              valueFrom:
+                secretKeyRef:
+                  name: "{{ include "uptime-kuma.fullname" . }}-tailscale-auth"
+                  key: TS_AUTHKEY
+                  optional: true
+        {{- end }}
       {{- with .Values.nodeSelector }}
       nodeSelector:
         {{- toYaml . | nindent 8 }}
