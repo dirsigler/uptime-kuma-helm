@@ -1,6 +1,6 @@
 # uptime-kuma
 
-![Version: 2.19.3](https://img.shields.io/badge/Version-2.19.3-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 1.23.13](https://img.shields.io/badge/AppVersion-1.23.13-informational?style=flat-square)
+![Version: 2.19.4](https://img.shields.io/badge/Version-2.19.4-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 1.23.13](https://img.shields.io/badge/AppVersion-1.23.13-informational?style=flat-square)
 
 A self-hosted Monitoring tool like "Uptime-Robot".
 
