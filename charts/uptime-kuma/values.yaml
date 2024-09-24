@@ -203,3 +203,7 @@ dnsPolicy: ""
 
 # -- Use this option to set custom DNS configurations to the created deployment
 dnsConfig: {}
+
+# -- Use this option to set custom PriorityClass to the created deployment
+# ref: https://kubernetes.io/docs/concepts/scheduling-eviction/pod-priority-preemption/#priorityclass
+priorityClassName: ""
