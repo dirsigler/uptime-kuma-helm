@@ -53,6 +53,7 @@ A self-hosted Monitoring tool like "Uptime-Robot".
 | podEnv[0].value | string | `"3001"` |  |
 | podLabels | object | `{}` |  |
 | podSecurityContext | object | `{}` |  |
+| priorityClassName | string | `""` | Use this option to set custom PriorityClass to the created deployment |
 | readinessProbe.enabled | bool | `true` |  |
 | readinessProbe.exec.command | list | `[]` |  |
 | readinessProbe.failureThreshold | int | `3` |  |
