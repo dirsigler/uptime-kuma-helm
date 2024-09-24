@@ -32,6 +32,9 @@ podEnv:
   # a default port must be set. required by container
   - name: "UPTIME_KUMA_PORT"
     value: "3001"
+  # For using a custom CA with additionalVolumes, the CA must be passed as an env variable to node
+  # - name: "NODE_EXTRA_CA_CERTS"
+  #   value: "/etc/ssl/certs/additional/additional-ca.pem"
 
 podSecurityContext:
   {}

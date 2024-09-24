@@ -51,6 +51,8 @@ A self-hosted Monitoring tool like "Uptime-Robot".
 | podAnnotations | object | `{}` |  |
 | podEnv[0].name | string | `"UPTIME_KUMA_PORT"` |  |
 | podEnv[0].value | string | `"3001"` |  |
+| podEnv[0].name | string | `"NODE_EXTRA_CA_CERTS"` |  |
+| podEnv[0].value | string | `"/etc/ssl/certs/additional/additional-ca.pem"` |  |
 | podLabels | object | `{}` |  |
 | podSecurityContext | object | `{}` |  |
 | priorityClassName | string | `""` | Use this option to set custom PriorityClass to the created deployment |
