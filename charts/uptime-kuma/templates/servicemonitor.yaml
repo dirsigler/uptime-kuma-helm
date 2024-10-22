@@ -3,7 +3,7 @@ apiVersion: monitoring.coreos.com/v1
 kind: ServiceMonitor
 metadata:
   name: {{ include "uptime-kuma.fullname" . }}
-  namespace: {{ default .Release.Namespace .Values.serviceMonitor.namespace }}
+  namespace: {{ .Values.serviceMonitor.namespace | default (include "uptime-kuma.namespace" .) }}
   labels:
     {{- include "uptime-kuma.labels" . | nindent 4 }}
     {{- with .Values.serviceMonitor.selector }}

@@ -4,6 +4,7 @@ kind: PersistentVolumeClaim
 apiVersion: v1
 metadata:
   name: {{ include "uptime-kuma.fullname" . }}-pvc
+  namespace: {{ include "uptime-kuma.namespace" . }}
   labels:
     {{- include "uptime-kuma.labels" . | nindent 4 }}
 spec:
