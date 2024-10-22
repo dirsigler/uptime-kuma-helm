@@ -47,6 +47,7 @@ A self-hosted Monitoring tool like "Uptime-Robot".
 | livenessProbe.successThreshold | int | `1` |  |
 | livenessProbe.timeoutSeconds | int | `2` |  |
 | nameOverride | string | `""` |  |
+| namespaceOverride | string | `""` | A custom namespace to override the default namespace for the deployed resources. |
 | nodeSelector | object | `{}` |  |
 | podAnnotations | object | `{}` |  |
 | podEnv[0].name | string | `"UPTIME_KUMA_PORT"` |  |

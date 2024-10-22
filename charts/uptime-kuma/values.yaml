@@ -11,6 +11,7 @@ image:
 imagePullSecrets: []
 nameOverride: ""
 fullnameOverride: ""
+# -- A custom namespace to override the default namespace for the deployed resources.
 namespaceOverride: ""
 
 # If this option is set to false a StateFulset instead of a Deployment is used
