@@ -3,6 +3,7 @@ apiVersion: apps/v1
 kind: StatefulSet
 metadata:
   name: {{ include "uptime-kuma.fullname" . }}
+  namespace: {{ include "uptime-kuma.namespace" . }}
   labels:
     {{- include "uptime-kuma.labels" . | nindent 4 }}
 spec:
