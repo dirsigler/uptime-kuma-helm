@@ -213,6 +213,8 @@ networkPolicy:
   enabled: false
   # -- Enable/disable Ingress policy type
   ingress: true
+  # -- Enable/disable Egress policy type
+  egress: true
   # -- Allow incoming connections only from specific Pods
   # When set to true, the geoserver will accept connections from any source.
   # When false, only Pods with the label {{ include "geoserver.fullname" . }}-client=true will have network access

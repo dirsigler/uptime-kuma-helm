@@ -13,6 +13,11 @@ spec:
     {{- if .Values.networkPolicy.ingress }}
     - Ingress
     {{- end }}
+    {{- if .Values.networkPolicy.egress }}
+    - Egress
+    {{- end }}
+  egress:
+  - {}
   {{- if .Values.networkPolicy.ingress }}
   ingress:
   - ports:
