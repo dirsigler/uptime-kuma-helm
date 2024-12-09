@@ -208,6 +208,7 @@ dnsConfig: {}
 # ref: https://kubernetes.io/docs/concepts/scheduling-eviction/pod-priority-preemption/#priorityclass
 priorityClassName: ""
 
+# -- Create a NetworkPolicy
 networkPolicy:
   # -- Enable/disable Network Policy
   enabled: false
