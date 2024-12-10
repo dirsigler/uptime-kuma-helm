@@ -28,10 +28,10 @@ podAnnotations: {}
 podLabels:
   {}
   # app: uptime-kuma
-podEnv:
-  # a default port must be set. required by container
-  - name: "UPTIME_KUMA_PORT"
-    value: "3001"
+podEnv: []
+  # optional additional environment variables
+  # - name: "A_VARIABLE"
+  #   value: "a-value"
 
 podSecurityContext:
   {}
@@ -207,3 +207,22 @@ dnsConfig: {}
 # -- Use this option to set custom PriorityClass to the created deployment
 # ref: https://kubernetes.io/docs/concepts/scheduling-eviction/pod-priority-preemption/#priorityclass
 priorityClassName: ""
+
+# -- Create a NetworkPolicy
+networkPolicy:
+  # -- Enable/disable Network Policy
+  enabled: false
+  # -- Enable/disable Ingress policy type
+  ingress: true
+  # -- Enable/disable Egress policy type
+  egress: true
+  # -- Allow incoming connections only from specific Pods
+  # When set to true, the geoserver will accept connections from any source.
+  # When false, only Pods with the label {{ include "geoserver.fullname" . }}-client=true will have network access
+  allowExternal: true
+  # -- Selects particular namespaces for which all Pods are allowed as ingress sources
+  namespaceSelector: {}
+  #  matchLabels:
+  #    role: frontend
+  #  matchExpressions:
+  #   - {key: role, operator: In, values: [frontend]}

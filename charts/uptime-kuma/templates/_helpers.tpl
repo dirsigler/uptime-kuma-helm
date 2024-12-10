@@ -51,6 +51,13 @@ app.kubernetes.io/instance: {{ .Release.Name }}
 {{- end }}
 
 {{/*
+Port of the Uptime Kuma container
+*/}}
+{{- define "uptime-kuma.port" -}}
+3001
+{{- end }}
+
+{{/*
 Create the name of the service account to use
 */}}
 {{- define "uptime-kuma.serviceAccountName" -}}

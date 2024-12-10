@@ -59,7 +59,7 @@ spec:
           {{- end }}
           ports:
             - name: http
-              containerPort: 3001
+              containerPort: {{ include "uptime-kuma.port" . }}
               protocol: TCP
           {{ if or .Values.volume.enabled .Values.additionalVolumeMounts -}}
           volumeMounts:

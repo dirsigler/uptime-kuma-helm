@@ -12,7 +12,7 @@ spec:
   type: {{ .Values.service.type }}
   ports:
     - port: {{ .Values.service.port }}
-      targetPort: 3001
+      targetPort: {{ include "uptime-kuma.port" . }}
       protocol: TCP
       {{- with .Values.service.nodePort }}
       nodePort: {{ . }}
