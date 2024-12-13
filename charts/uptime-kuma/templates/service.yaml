@@ -18,5 +18,8 @@ spec:
       nodePort: {{ . }}
       {{- end }}
       name: http
+{{- if .Values.service.loadBalancerIP }}
+  loadBalancerIP: {{ .Values.service.loadBalancerIP | quote }}
+{{- end }}
   selector:
     {{- include "uptime-kuma.selectorLabels" . | nindent 4 }}
