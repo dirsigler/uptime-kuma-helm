@@ -53,7 +53,7 @@ spec:
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           env:
             - name: "UPTIME_KUMA_PORT"
-              value: {{ include "uptime-kuma.port" . }}
+              value: {{ include "uptime-kuma.port" . | quote }}
           {{- with .Values.podEnv }}
             {{- toYaml . | nindent 12 }}
           {{- end }}
