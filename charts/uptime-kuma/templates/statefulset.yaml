@@ -52,13 +52,15 @@ spec:
             {{- toYaml .Values.securityContext | nindent 12 }}
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
-          {{- with .Values.podEnv }}
           env:
+            - name: "UPTIME_KUMA_PORT"
+              value: {{ include "uptime-kuma.port" . | quote }}
+          {{- with .Values.podEnv }}
             {{- toYaml . | nindent 12 }}
           {{- end }}
           ports:
             - name: http
-              containerPort: 3001
+              containerPort: {{ include "uptime-kuma.port" . }}
               protocol: TCP
           {{ if or .Values.volume.enabled .Values.additionalVolumeMounts -}}
           volumeMounts:
@@ -82,7 +84,7 @@ spec:
           readinessProbe:
             httpGet:
               path: /
-              port: 3001
+              port: {{ include "uptime-kuma.port" . }}
               scheme: HTTP
             initialDelaySeconds: {{ .Values.readinessProbe.initialDelaySeconds}}
           {{- end }}

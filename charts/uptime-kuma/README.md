@@ -1,6 +1,6 @@
 # uptime-kuma
 
-![Version: 2.19.4](https://img.shields.io/badge/Version-2.19.4-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 1.23.13](https://img.shields.io/badge/AppVersion-1.23.13-informational?style=flat-square)
+![Version: 2.21.0](https://img.shields.io/badge/Version-2.21.0-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 1.23.13](https://img.shields.io/badge/AppVersion-1.23.13-informational?style=flat-square)
 
 A self-hosted Monitoring tool like "Uptime-Robot".
 
@@ -48,13 +48,18 @@ A self-hosted Monitoring tool like "Uptime-Robot".
 | livenessProbe.timeoutSeconds | int | `2` |  |
 | nameOverride | string | `""` |  |
 | namespaceOverride | string | `""` | A custom namespace to override the default namespace for the deployed resources. |
+| networkPolicy | object | `{"allowExternal":true,"egress":true,"enabled":false,"ingress":true,"namespaceSelector":{}}` | Create a NetworkPolicy |
+| networkPolicy.allowExternal | bool | `true` | Allow incoming connections only from specific Pods When set to true, the geoserver will accept connections from any source. When false, only Pods with the label {{ include "geoserver.fullname" . }}-client=true will have network access |
+| networkPolicy.egress | bool | `true` | Enable/disable Egress policy type |
+| networkPolicy.enabled | bool | `false` | Enable/disable Network Policy |
+| networkPolicy.ingress | bool | `true` | Enable/disable Ingress policy type |
+| networkPolicy.namespaceSelector | object | `{}` | Selects particular namespaces for which all Pods are allowed as ingress sources |
 | nodeSelector | object | `{}` |  |
 | podAnnotations | object | `{}` |  |
-| podEnv[0].name | string | `"UPTIME_KUMA_PORT"` |  |
-| podEnv[0].value | string | `"3001"` |  |
+| podEnv | list | `[]` |  |
 | podLabels | object | `{}` |  |
 | podSecurityContext | object | `{}` |  |
-| priorityClassName | string | `""` | Use this option to set custom PriorityClass to the created deployment |
+| priorityClassName | string | `""` | Use this option to set custom PriorityClass to the created deployment ref: https://kubernetes.io/docs/concepts/scheduling-eviction/pod-priority-preemption/#priorityclass |
 | readinessProbe.enabled | bool | `true` |  |
 | readinessProbe.exec.command | list | `[]` |  |
 | readinessProbe.failureThreshold | int | `3` |  |
