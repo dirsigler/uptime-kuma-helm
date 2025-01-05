@@ -47,6 +47,7 @@ A self-hosted Monitoring tool like "Uptime-Robot".
 | livenessProbe.successThreshold | int | `1` |  |
 | livenessProbe.timeoutSeconds | int | `2` |  |
 | nameOverride | string | `""` |  |
+| namespaceOverride | string | `""` | A custom namespace to override the default namespace for the deployed resources. |
 | networkPolicy | object | `{"allowExternal":true,"egress":true,"enabled":false,"ingress":true,"namespaceSelector":{}}` | Create a NetworkPolicy |
 | networkPolicy.allowExternal | bool | `true` | Allow incoming connections only from specific Pods When set to true, the geoserver will accept connections from any source. When false, only Pods with the label {{ include "geoserver.fullname" . }}-client=true will have network access |
 | networkPolicy.egress | bool | `true` | Enable/disable Egress policy type |

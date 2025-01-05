@@ -74,3 +74,14 @@ Set automountServiceAccountToken when service account is created
 {{- define "uptime-kuma.automountServiceAccountToken" -}}
 {{- default .Values.serviceAccount.create }}
 {{- end }}
+
+{{/*
+Determine the namespace to use, allowing for a namespace override.
+*/}}
+{{- define "uptime-kuma.namespace" -}}
+  {{- if .Values.namespaceOverride }}
+    {{- .Values.namespaceOverride }}
+  {{- else }}
+    {{- .Release.Namespace }}
+  {{- end }}
+{{- end }}

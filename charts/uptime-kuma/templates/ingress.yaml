@@ -16,6 +16,7 @@ apiVersion: extensions/v1beta1
 kind: Ingress
 metadata:
   name: {{ $fullName }}
+  namespace: {{ include "uptime-kuma.namespace" . }}
   labels:
     {{- include "uptime-kuma.labels" . | nindent 4 }}
     {{- if .Values.ingress.extraLabels }}
