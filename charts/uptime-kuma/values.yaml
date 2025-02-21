@@ -168,6 +168,16 @@ additionalVolumeMounts:
 strategy:
   type: Recreate
 
+# Mariadb configurations
+mariadb:
+  enabled: false
+  architecture: standalone
+  auth:
+    database: uptime_kuma
+    username: uptime_kuma
+    password: ""
+    rootPassword: ""
+
 # Prometheus ServiceMonitor configuration
 serviceMonitor:
   enabled: false
