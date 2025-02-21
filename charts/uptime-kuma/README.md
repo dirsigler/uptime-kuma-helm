@@ -20,7 +20,7 @@ A self-hosted Monitoring tool like "Uptime-Robot".
 
 To use MariaDB as the database backend for the application, set `mariadb.enabled=true`
 
-For more advanced configuration options (e.g., setting up replication, customizing storage), refer to the official [https://artifacthub.io/packages/helm/bitnami/mariadb](Bitnami MariaDB Helm chart documentation).
+For more advanced configuration options (e.g., setting up replication, customizing storage), refer to the official [Bitnami MariaDB Helm chart documentation](https://artifacthub.io/packages/helm/bitnami/mariadb).
 
 ## Values
 
