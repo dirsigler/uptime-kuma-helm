@@ -51,6 +51,7 @@ spec:
       {{- end }}
       {{- if or .Values.mariadb.enabled .Values.tailscale.enabled .Values.initContainers }}
       initContainers:
+<<<<<<< HEAD
         {{- if .Values.mariadb.enabled }}
         - name: wait-for-db
           image: busybox:latest
@@ -68,6 +69,10 @@ spec:
         {{- end }}
         {{- if .Values.tailscale.enabled }}
         - name: ts-sidecar
+=======
+      {{- if .Values.tailscale.enabled }}
+        - name: tailscale
+>>>>>>> 2911ceb (change name of sidecar)
           imagePullPolicy: {{ .Values.tailscale.image.pullPolicy }}
           image: "{{ .Values.tailscale.image.repository }}:{{ .Values.tailscale.image.tag }}"
           securityContext:
