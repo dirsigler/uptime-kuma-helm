@@ -232,4 +232,4 @@ networkPolicy:
 # -- List of initialization or sidecar containers to be added to the deployment
 # ref: https://kubernetes.io/docs/concepts/workloads/pods/init-containers/
 # ref: https://kubernetes.io/docs/concepts/workloads/pods/sidecar-containers/
-initContainers: []
+#initContainers: []
