@@ -49,7 +49,8 @@ spec:
       priorityClassName: {{ .Values.priorityClassName | quote }}
       {{- end }}
       {{- with .Values.initContainers }}
-      initContainers: {{ toYaml . | nindent 8 }}
+      initContainers:
+        {{- toYaml . | nindent 8 }}
       {{- end }}
       containers:
         - name: {{ .Chart.Name }}
