@@ -16,6 +16,12 @@ A self-hosted Monitoring tool like "Uptime-Robot".
 
 * <https://github.com/louislam/uptime-kuma>
 
+## MariaDB Configuration
+
+To use MariaDB as the database backend for the application, set `mariadb.enabled=true`
+
+For more advanced configuration options (e.g., setting up replication, customizing storage), refer to the official [Bitnami MariaDB Helm chart documentation](https://artifacthub.io/packages/helm/bitnami/mariadb).
+
 ## Values
 
 | Key | Type | Default | Description |
@@ -46,6 +52,12 @@ A self-hosted Monitoring tool like "Uptime-Robot".
 | livenessProbe.periodSeconds | int | `10` |  |
 | livenessProbe.successThreshold | int | `1` |  |
 | livenessProbe.timeoutSeconds | int | `2` |  |
+| mariadb.enabled | bool | `false` | Whether to enable MariaDB as the database backend. |
+| mariadb.architecture | str | `standalone` | |
+| mariadb.auth.database | str | `uptime_kuma` | |
+| mariadb.auth.username | str | `uptime_kuma` | |
+| mariadb.auth.password | str | `""` | |
+| mariadb.auth.rootPassword | str | `""` | |
 | nameOverride | string | `""` |  |
 | namespaceOverride | string | `""` | A custom namespace to override the default namespace for the deployed resources. |
 | networkPolicy | object | `{"allowExternal":true,"egress":true,"enabled":false,"ingress":true,"namespaceSelector":{}}` | Create a NetworkPolicy |

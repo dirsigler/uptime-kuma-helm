@@ -58,6 +58,23 @@ spec:
           {{- with .Values.podEnv }}
             {{- toYaml . | nindent 12 }}
           {{- end }}
+          {{- if .Values.mariadb.enabled }}
+            - name: UPTIME_KUMA_DB_TYPE
+              value: "mariadb"
+            - name: UPTIME_KUMA_DB_HOSTNAME
+              value: "{{ .Release.Name }}-mariadb"
+            - name: UPTIME_KUMA_DB_PORT
+              value: "3306"
+            - name: UPTIME_KUMA_DB_NAME
+              value: "{{ .Values.mariadb.auth.database }}"
+            - name: UPTIME_KUMA_DB_USERNAME
+              value: "{{ .Values.mariadb.auth.username }}"
+            - name: UPTIME_KUMA_DB_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: "{{ .Release.Name }}-mariadb"
+                  key: "mariadb-password"
+            {{- end }}
           ports:
             - name: http
               containerPort: {{ include "uptime-kuma.port" . }}

@@ -54,10 +54,27 @@ spec:
             {{- toYaml .Values.securityContext | nindent 12 }}
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
-          {{- with .Values.podEnv }}
           env:
+            {{- with .Values.podEnv }}
             {{- toYaml . | nindent 12 }}
-          {{- end }}
+            {{- end }}
+            {{- if .Values.mariadb.enabled }}
+            - name: UPTIME_KUMA_DB_TYPE
+              value: "mariadb"
+            - name: UPTIME_KUMA_DB_HOSTNAME
+              value: "{{ .Release.Name }}-mariadb"
+            - name: UPTIME_KUMA_DB_PORT
+              value: "3306"
+            - name: UPTIME_KUMA_DB_NAME
+              value: "{{ .Values.mariadb.auth.database }}"
+            - name: UPTIME_KUMA_DB_USERNAME
+              value: "{{ .Values.mariadb.auth.username }}"
+            - name: UPTIME_KUMA_DB_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: "{{ .Release.Name }}-mariadb"
+                  key: "mariadb-password"
+            {{- end }}
           ports:
             - name: http
               containerPort: {{ include "uptime-kuma.port" . }}
@@ -111,6 +128,22 @@ spec:
             {{- end }}
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
+      {{- if .Values.mariadb.enabled }}
+      initContainers:
+        - name: wait-for-db
+          image: busybox:latest
+          command:
+            - "/bin/sh"
+            - "-c"
+            - "until nc -z {{ .Release.Name }}-mariadb 3306; do echo 'Waiting for MariaDB...'; sleep 2; done; echo 'MariaDB is ready!'"
+          resources:
+            limits:
+              memory: "64Mi"
+              cpu: "100m"
+            requests:
+              memory: "32Mi"
+              cpu: "50m"
+      {{- end }}
       {{- with .Values.nodeSelector }}
       nodeSelector:
         {{- toYaml . | nindent 8 }}
