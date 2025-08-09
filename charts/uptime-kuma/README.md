@@ -1,6 +1,6 @@
 # uptime-kuma
 
-![Version: 2.21.0](https://img.shields.io/badge/Version-2.21.0-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 1.23.13](https://img.shields.io/badge/AppVersion-1.23.13-informational?style=flat-square)
+![Version: 2.21.4](https://img.shields.io/badge/Version-2.21.4-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 1.23.13](https://img.shields.io/badge/AppVersion-1.23.13-informational?style=flat-square)
 
 A self-hosted Monitoring tool like "Uptime-Robot".
 
@@ -16,11 +16,11 @@ A self-hosted Monitoring tool like "Uptime-Robot".
 
 * <https://github.com/louislam/uptime-kuma>
 
-## MariaDB Configuration
+## Requirements
 
-To use MariaDB as the database backend for the application, set `mariadb.enabled=true`
-
-For more advanced configuration options (e.g., setting up replication, customizing storage), refer to the official [Bitnami MariaDB Helm chart documentation](https://artifacthub.io/packages/helm/bitnami/mariadb).
+| Repository | Name | Version |
+|------------|------|---------|
+| https://charts.bitnami.com/bitnami | mariadb | 21.0.7 |
 
 ## Values
 
@@ -52,12 +52,12 @@ For more advanced configuration options (e.g., setting up replication, customizi
 | livenessProbe.periodSeconds | int | `10` |  |
 | livenessProbe.successThreshold | int | `1` |  |
 | livenessProbe.timeoutSeconds | int | `2` |  |
-| mariadb.enabled | bool | `false` | Whether to enable MariaDB as the database backend. |
-| mariadb.architecture | str | `standalone` | |
-| mariadb.auth.database | str | `uptime_kuma` | |
-| mariadb.auth.username | str | `uptime_kuma` | |
-| mariadb.auth.password | str | `""` | |
-| mariadb.auth.rootPassword | str | `""` | |
+| mariadb.architecture | string | `"standalone"` |  |
+| mariadb.auth.database | string | `"uptime_kuma"` |  |
+| mariadb.auth.password | string | `""` |  |
+| mariadb.auth.rootPassword | string | `""` |  |
+| mariadb.auth.username | string | `"uptime_kuma"` |  |
+| mariadb.enabled | bool | `false` |  |
 | nameOverride | string | `""` |  |
 | namespaceOverride | string | `""` | A custom namespace to override the default namespace for the deployed resources. |
 | networkPolicy | object | `{"allowExternal":true,"egress":true,"enabled":false,"ingress":true,"namespaceSelector":{}}` | Create a NetworkPolicy |
