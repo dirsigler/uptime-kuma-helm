@@ -2,6 +2,28 @@ apiVersion: v1
 entries:
   uptime-kuma:
   - apiVersion: v2
+    appVersion: 1.23.16
+    created: "2025-08-09T08:09:31.294722355Z"
+    dependencies:
+    - condition: mariadb.enabled
+      name: mariadb
+      repository: https://charts.bitnami.com/bitnami
+      version: 21.0.7
+    description: A self-hosted Monitoring tool like "Uptime-Robot".
+    digest: 80606bfd59dfb971148e2afe483c4ea1a34da10aa18ace056878bdf84ce6d341
+    home: https://github.com/dirsigler/uptime-kuma-helm
+    icon: https://raw.githubusercontent.com/louislam/uptime-kuma/master/public/icon.png
+    maintainers:
+    - email: dennis@irsigler.dev
+      name: dirsigler
+    name: uptime-kuma
+    sources:
+    - https://github.com/louislam/uptime-kuma
+    type: application
+    urls:
+    - https://github.com/dirsigler/uptime-kuma-helm/releases/download/uptime-kuma-2.22.0/uptime-kuma-2.22.0.tgz
+    version: 2.22.0
+  - apiVersion: v2
     appVersion: 1.23.13
     created: "2025-08-09T08:03:07.322178101Z"
     dependencies:
@@ -1256,4 +1278,4 @@ entries:
     urls:
     - https://github.com/dirsigler/uptime-kuma-helm/releases/download/uptime-kuma-0.1.0/uptime-kuma-0.1.0.tgz
     version: 0.1.0
-generated: "2025-08-09T08:03:07.32241308Z"
+generated: "2025-08-09T08:09:31.294982032Z"
