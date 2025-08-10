@@ -9,12 +9,43 @@
   "pre-commit": {
     "enabled": true
   },
+  "allowedPostUpgradeCommands": [
+    "./scripts/bump-chart-version.sh",
+    "./scripts/update-app-version.sh"
+  ],
   "packageRules": [
     {
-      "matchManagers": ["pre-commit", "helmv3", "helm-values", "github-actions"],
+      "matchManagers": ["pre-commit", "github-actions"],
       "matchUpdateTypes": ["minor", "patch", "pin", "digest"],
       "groupName": "all",
       "automerge": false
+    },
+    {
+      "matchManagers": ["helmv3"],
+      "matchDatasources": ["helm"],
+      "matchUpdateTypes": ["minor", "patch", "pin", "digest"],
+      "groupName": "all",
+      "automerge": false,
+      "postUpgradeTasks": {
+        "commands": ["./scripts/bump-chart-version.sh"],
+        "executionMode": "branch",
+        "container": {
+          "image": "alpine/helm:3.12.3"
+        }
+      }
+    },
+    {
+      "matchManagers": ["helm-values"],
+      "matchUpdateTypes": ["minor", "patch", "pin", "digest"],
+      "groupName": "all",
+      "automerge": false,
+      "postUpgradeTasks": {
+        "commands": ["./scripts/update-app-version.sh"],
+        "executionMode": "branch",
+        "container": {
+          "image": "alpine/helm:3.12.3"
+        }
+      }
     }
   ]
 }
