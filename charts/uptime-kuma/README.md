@@ -31,6 +31,15 @@ A self-hosted Monitoring tool like "Uptime-Robot".
 | affinity | object | `{}` |  |
 | dnsConfig | object | `{}` | Use this option to set custom DNS configurations to the created deployment |
 | dnsPolicy | string | `""` | Use this option to set a custom DNS policy to the created deployment |
+| externalDatabase.database | string | `"uptime_kuma"` |  |
+| externalDatabase.enabled | bool | `false` |  |
+| externalDatabase.existingSecret | string | `""` |  |
+| externalDatabase.existingSecretPasswordKey | string | `"password"` |  |
+| externalDatabase.existingSecretUsernameKey | string | `"username"` |  |
+| externalDatabase.hostname | string | `""` |  |
+| externalDatabase.password | string | `""` |  |
+| externalDatabase.port | int | `3306` |  |
+| externalDatabase.username | string | `"uptime_kuma"` |  |
 | fullnameOverride | string | `""` |  |
 | image.pullPolicy | string | `"IfNotPresent"` |  |
 | image.repository | string | `"louislam/uptime-kuma"` |  |
