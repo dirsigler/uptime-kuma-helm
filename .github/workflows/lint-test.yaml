@@ -53,3 +53,36 @@ jobs:
 
       - name: Run chart-testing (install)
         run: ct install --config ".github/configs/ct.yaml" --target-branch main
+  
+  unit-tests:
+    name: Run Helm Unit Tests
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Set up Helm
+        uses: azure/setup-helm@v3
+        with:
+          version: v3.18.6
+
+      - name: Install helm-unittest plugin
+        run: |
+          helm plugin install https://github.com/helm-unittest/helm-unittest.git --version v1.0.0
+
+      - name: Update dependencies
+        run: helm dependency update charts/uptime-kuma/
+
+      - name: Run unit tests
+        run: |
+          helm unittest charts/uptime-kuma/ --color --output-type JUnit --output-file results.xml
+
+      - name: Publish Test Results
+        uses: EnricoMi/publish-unit-test-result-action@v2
+        if: always()
+        with:
+          files: results.xml
+          check_name: "Helm Unit Test Results"
+          comment_title: "Helm Unit Test Results"
