@@ -1,4 +1,5 @@
 {{- if .Values.useDeploy -}}
+{{- include "uptime-kuma.validateDbConfig" . -}}
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -74,6 +75,33 @@ spec:
                 secretKeyRef:
                   name: "{{ .Release.Name }}-mariadb"
                   key: "mariadb-password"
+            {{- else if .Values.externalDatabase.enabled }}
+            - name: UPTIME_KUMA_DB_TYPE
+              value: "mariadb"
+            - name: UPTIME_KUMA_DB_HOSTNAME
+              value: "{{ .Values.externalDatabase.hostname }}"
+            - name: UPTIME_KUMA_DB_PORT
+              value: "{{ .Values.externalDatabase.port }}"
+            - name: UPTIME_KUMA_DB_NAME
+              value: "{{ .Values.externalDatabase.database }}"
+            - name: UPTIME_KUMA_DB_USERNAME
+              {{- if .Values.externalDatabase.existingSecret }}
+              valueFrom:
+                secretKeyRef:
+                  name: "{{ .Values.externalDatabase.existingSecret }}"
+                  key: "{{ .Values.externalDatabase.existingSecretUsernameKey }}"
+              {{- else }}
+              value: "{{ .Values.externalDatabase.username }}"
+              {{- end }}
+            - name: UPTIME_KUMA_DB_PASSWORD
+              {{- if .Values.externalDatabase.existingSecret }}
+              valueFrom:
+                secretKeyRef:
+                  name: "{{ .Values.externalDatabase.existingSecret }}"
+                  key: "{{ .Values.externalDatabase.existingSecretPasswordKey }}"
+              {{- else }}
+              value: "{{ .Values.externalDatabase.password }}"
+              {{- end }}
             {{- end }}
           ports:
             - name: http

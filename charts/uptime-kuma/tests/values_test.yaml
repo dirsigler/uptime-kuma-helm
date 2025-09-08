@@ -1,0 +1,173 @@
+suite: test values validation
+templates:
+  - deployment.yaml
+  - statefulset.yaml
+  - service.yaml
+  - ingress.yaml
+  - pvc.yaml
+  - serviceaccount.yaml
+tests:
+  - it: should fail when both mariadb and externalDatabase are enabled
+    set:
+      useDeploy: true
+      mariadb:
+        enabled: true
+      externalDatabase:
+        enabled: true
+    templates:
+      - deployment.yaml
+    asserts:
+      - failedTemplate:
+          errorMessage: "Cannot enable both MariaDB (.Values.mariadb.enabled) and external database (.Values.externalDatabase.enabled). Please choose one."
+
+  - it: should create ingress when enabled
+    set:
+      ingress:
+        enabled: true
+        hosts:
+          - host: uptime-kuma.example.com
+            paths:
+              - path: /
+                pathType: Prefix
+    templates:
+      - ingress.yaml
+    asserts:
+      - isKind:
+          of: Ingress
+      - equal:
+          path: spec.rules[0].host
+          value: uptime-kuma.example.com
+
+  - it: should not create ingress when disabled
+    set:
+      ingress:
+        enabled: false
+    templates:
+      - ingress.yaml
+    asserts:
+      - hasDocuments:
+          count: 0
+
+  - it: should create PVC when volume is enabled and no existingClaim
+    set:
+      volume:
+        enabled: true
+        size: 8Gi
+        storageClassName: "fast-ssd"
+    templates:
+      - pvc.yaml
+    asserts:
+      - isKind:
+          of: PersistentVolumeClaim
+      - equal:
+          path: spec.resources.requests.storage
+          value: 8Gi
+      - equal:
+          path: spec.storageClassName
+          value: "fast-ssd"
+
+  - it: should not create PVC when existingClaim is set
+    set:
+      volume:
+        enabled: true
+        existingClaim: "my-existing-pvc"
+    templates:
+      - pvc.yaml
+    asserts:
+      - hasDocuments:
+          count: 0
+
+  - it: should not create PVC when volume is disabled
+    set:
+      volume:
+        enabled: false
+    templates:
+      - pvc.yaml
+    asserts:
+      - hasDocuments:
+          count: 0
+
+  - it: should validate image tag format in deployment
+    set:
+      useDeploy: true
+      image:
+        tag: "invalid-tag-format"
+    templates:
+      - deployment.yaml
+    asserts:
+      - equal:
+          path: spec.template.spec.containers[0].image
+          value: "louislam/uptime-kuma:invalid-tag-format"
+
+  - it: should use chart appVersion when no tag specified in deployment
+    set:
+      useDeploy: true
+      image:
+        tag: ""
+    templates:
+      - deployment.yaml
+    asserts:
+      - matchRegex:
+          path: spec.template.spec.containers[0].image
+          pattern: "louislam/uptime-kuma:[0-9]+\\.[0-9]+\\.[0-9]+"
+
+  - it: should configure serviceAccount when create is true
+    set:
+      serviceAccount:
+        create: true
+        name: "custom-sa"
+    templates:
+      - serviceaccount.yaml
+    asserts:
+      - isKind:
+          of: ServiceAccount
+      - equal:
+          path: metadata.name
+          value: "custom-sa"
+
+  - it: should set correct security context in deployment
+    set:
+      useDeploy: true
+      podSecurityContext:
+        fsGroup: 2000
+        runAsUser: 1000
+      securityContext:
+        runAsNonRoot: true
+        readOnlyRootFilesystem: true
+    templates:
+      - deployment.yaml
+    asserts:
+      - equal:
+          path: spec.template.spec.securityContext.fsGroup
+          value: 2000
+      - equal:
+          path: spec.template.spec.containers[0].securityContext.runAsNonRoot
+          value: true
+
+  - it: should add additional environment variables in deployment
+    set:
+      useDeploy: true
+      podEnv:
+        - name: "CUSTOM_VAR"
+          value: "custom-value"
+        - name: "ANOTHER_VAR"
+          valueFrom:
+            secretKeyRef:
+              name: "my-secret"
+              key: "secret-key"
+    templates:
+      - deployment.yaml
+    asserts:
+      - contains:
+          path: spec.template.spec.containers[0].env
+          content:
+            name: "CUSTOM_VAR"
+            value: "custom-value"
+      - contains:
+          path: spec.template.spec.containers[0].env
+          content:
+            name: "ANOTHER_VAR"
+            valueFrom:
+              secretKeyRef:
+                name: "my-secret"
+                key: "secret-key"

@@ -178,6 +178,20 @@ mariadb:
     password: ""
     rootPassword: ""
 
+# External MariaDB database configuration
+# Use this when you want to connect to an external database instead of deploying MariaDB
+externalDatabase:
+  enabled: false
+  hostname: ""
+  port: 3306
+  database: uptime_kuma
+  username: uptime_kuma
+  password: ""
+  # Use existing secret for database credentials
+  existingSecret: ""
+  existingSecretPasswordKey: "password"
+  existingSecretUsernameKey: "username"
+
 # Prometheus ServiceMonitor configuration
 serviceMonitor:
   enabled: false

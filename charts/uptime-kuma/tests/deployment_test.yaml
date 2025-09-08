@@ -1,0 +1,214 @@
+suite: test deployment
+templates:
+  - deployment.yaml
+tests:
+  - it: should create deployment when useDeploy is true
+    set:
+      useDeploy: true
+    asserts:
+      - isKind:
+          of: Deployment
+      - equal:
+          path: metadata.name
+          value: RELEASE-NAME-uptime-kuma
+      - equal:
+          path: spec.replicas
+          value: 1
+
+  - it: should not create deployment when useDeploy is false
+    set:
+      useDeploy: false
+    asserts:
+      - hasDocuments:
+          count: 0
+
+  - it: should set correct image
+    set:
+      useDeploy: true
+      image:
+        repository: louislam/uptime-kuma
+        tag: "1.23.16-debian"
+    asserts:
+      - equal:
+          path: spec.template.spec.containers[0].image
+          value: "louislam/uptime-kuma:1.23.16-debian"
+
+  - it: should configure MariaDB environment variables when enabled
+    set:
+      useDeploy: true
+      mariadb:
+        enabled: true
+        auth:
+          database: uptime_kuma
+          username: uptime_kuma
+    asserts:
+      - contains:
+          path: spec.template.spec.containers[0].env
+          content:
+            name: UPTIME_KUMA_DB_TYPE
+            value: "mariadb"
+      - contains:
+          path: spec.template.spec.containers[0].env
+          content:
+            name: UPTIME_KUMA_DB_HOSTNAME
+            value: "RELEASE-NAME-mariadb"
+      - contains:
+          path: spec.template.spec.containers[0].env
+          content:
+            name: UPTIME_KUMA_DB_NAME
+            value: "uptime_kuma"
+
+  - it: should configure external database environment variables when enabled
+    set:
+      useDeploy: true
+      externalDatabase:
+        enabled: true
+        hostname: "external-db.example.com"
+        port: 3306
+        database: uptime_kuma
+        username: uptime_kuma
+        password: "secret"
+    asserts:
+      - contains:
+          path: spec.template.spec.containers[0].env
+          content:
+            name: UPTIME_KUMA_DB_TYPE
+            value: "mariadb"
+      - contains:
+          path: spec.template.spec.containers[0].env
+          content:
+            name: UPTIME_KUMA_DB_HOSTNAME
+            value: "external-db.example.com"
+      - contains:
+          path: spec.template.spec.containers[0].env
+          content:
+            name: UPTIME_KUMA_DB_PORT
+            value: "3306"
+
+  - it: should use existing secret for external database
+    set:
+      useDeploy: true
+      externalDatabase:
+        enabled: true
+        hostname: "external-db.example.com"
+        existingSecret: "my-db-secret"
+        existingSecretPasswordKey: "password"
+        existingSecretUsernameKey: "username"
+    asserts:
+      - contains:
+          path: spec.template.spec.containers[0].env
+          content:
+            name: UPTIME_KUMA_DB_USERNAME
+            valueFrom:
+              secretKeyRef:
+                name: "my-db-secret"
+                key: "username"
+      - contains:
+          path: spec.template.spec.containers[0].env
+          content:
+            name: UPTIME_KUMA_DB_PASSWORD
+            valueFrom:
+              secretKeyRef:
+                name: "my-db-secret"
+                key: "password"
+
+  - it: should create init container when MariaDB is enabled
+    set:
+      useDeploy: true
+      mariadb:
+        enabled: true
+    asserts:
+      - isNotEmpty:
+          path: spec.template.spec.initContainers
+      - equal:
+          path: spec.template.spec.initContainers[0].name
+          value: wait-for-db
+
+  - it: should configure volume mounts when volume is enabled
+    set:
+      useDeploy: true
+      volume:
+        enabled: true
+    asserts:
+      - contains:
+          path: spec.template.spec.containers[0].volumeMounts
+          content:
+            name: storage
+            mountPath: /app/data
+      - contains:
+          path: spec.template.spec.volumes
+          content:
+            name: storage
+            persistentVolumeClaim:
+              claimName: RELEASE-NAME-uptime-kuma-pvc
+
+  - it: should set resource limits and requests
+    set:
+      useDeploy: true
+      resources:
+        limits:
+          cpu: 100m
+          memory: 128Mi
+        requests:
+          cpu: 100m
+          memory: 128Mi
+    asserts:
+      - equal:
+          path: spec.template.spec.containers[0].resources.limits.cpu
+          value: 100m
+      - equal:
+          path: spec.template.spec.containers[0].resources.requests.memory
+          value: 128Mi
+
+  - it: should configure strategy when specified
+    set:
+      useDeploy: true
+      strategy:
+        type: RollingUpdate
+        rollingUpdate:
+          partition: 0
+    asserts:
+      - equal:
+          path: spec.strategy.type
+          value: RollingUpdate
+      - equal:
+          path: spec.strategy.rollingUpdate.partition
+          value: 0
+
+  - it: should configure liveness probe when enabled
+    set:
+      useDeploy: true
+      livenessProbe:
+        enabled: true
+        initialDelaySeconds: 180
+        periodSeconds: 10
+        timeoutSeconds: 2
+        failureThreshold: 3
+        successThreshold: 1
+        exec:
+          command:
+            - "extra/healthcheck"
+    asserts:
+      - equal:
+          path: spec.template.spec.containers[0].livenessProbe.initialDelaySeconds
+          value: 180
+      - equal:
+          path: spec.template.spec.containers[0].livenessProbe.exec.command[0]
+          value: "extra/healthcheck"
+
+  - it: should configure readiness probe
+    set:
+      useDeploy: true
+      readinessProbe:
+        enabled: true
+        httpGet:
+          path: /
+          port: 3001
+          scheme: HTTP
+    asserts:
+      - equal:
+          path: spec.template.spec.containers[0].readinessProbe.httpGet.path
+          value: /
+      - equal:
+          path: spec.template.spec.containers[0].readinessProbe.httpGet.port
+          value: 3001

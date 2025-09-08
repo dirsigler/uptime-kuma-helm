@@ -1,0 +1,133 @@
+suite: test ingress
+templates:
+  - ingress.yaml
+tests:
+  - it: should create ingress when enabled
+    set:
+      ingress:
+        enabled: true
+        hosts:
+          - host: uptime-kuma.example.com
+            paths:
+              - path: /
+                pathType: ImplementationSpecific
+    asserts:
+      - isKind:
+          of: Ingress
+      - equal:
+          path: metadata.name
+          value: RELEASE-NAME-uptime-kuma
+      - equal:
+          path: spec.rules[0].host
+          value: uptime-kuma.example.com
+      - equal:
+          path: spec.rules[0].http.paths[0].path
+          value: /
+
+  - it: should not create ingress when disabled
+    set:
+      ingress:
+        enabled: false
+    asserts:
+      - hasDocuments:
+          count: 0
+
+  - it: should set ingress annotations
+    set:
+      ingress:
+        enabled: true
+        annotations:
+          nginx.ingress.kubernetes.io/rewrite-target: /
+          cert-manager.io/cluster-issuer: letsencrypt-prod
+        hosts:
+          - host: uptime-kuma.example.com
+            paths:
+              - path: /
+                pathType: Prefix
+    asserts:
+      - equal:
+          path: metadata.annotations["nginx.ingress.kubernetes.io/rewrite-target"]
+          value: /
+      - equal:
+          path: metadata.annotations["cert-manager.io/cluster-issuer"]
+          value: letsencrypt-prod
+
+  - it: should configure TLS when specified
+    set:
+      ingress:
+        enabled: true
+        hosts:
+          - host: uptime-kuma.example.com
+            paths:
+              - path: /
+                pathType: Prefix
+        tls:
+          - secretName: uptime-kuma-tls
+            hosts:
+              - uptime-kuma.example.com
+    asserts:
+      - equal:
+          path: spec.tls[0].secretName
+          value: uptime-kuma-tls
+      - contains:
+          path: spec.tls[0].hosts
+          content: uptime-kuma.example.com
+
+  - it: should set custom ingress class
+    set:
+      ingress:
+        enabled: true
+        className: "nginx"
+        hosts:
+          - host: uptime-kuma.example.com
+            paths:
+              - path: /
+                pathType: Prefix
+    asserts:
+      - equal:
+          path: spec.ingressClassName
+          value: "nginx"
+
+  - it: should add extra labels
+    set:
+      ingress:
+        enabled: true
+        extraLabels:
+          environment: production
+          team: monitoring
+        hosts:
+          - host: uptime-kuma.example.com
+            paths:
+              - path: /
+                pathType: Prefix
+    asserts:
+      - equal:
+          path: metadata.labels.environment
+          value: production
+      - equal:
+          path: metadata.labels.team
+          value: monitoring
+
+  - it: should handle multiple hosts
+    set:
+      ingress:
+        enabled: true
+        hosts:
+          - host: uptime-kuma.example.com
+            paths:
+              - path: /
+                pathType: Prefix
+          - host: monitoring.example.com
+            paths:
+              - path: /uptime
+                pathType: Prefix
+    asserts:
+      - equal:
+          path: spec.rules[0].host
+          value: uptime-kuma.example.com
+      - equal:
+          path: spec.rules[1].host
+          value: monitoring.example.com
+      - equal:
+          path: spec.rules[1].http.paths[0].path
+          value: /uptime

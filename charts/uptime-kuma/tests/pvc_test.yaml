@@ -1,0 +1,70 @@
+suite: test pvc
+templates:
+  - pvc.yaml
+tests:
+  - it: should create PVC when volume is enabled
+    set:
+      volume:
+        enabled: true
+        size: 4Gi
+        accessMode: ReadWriteOnce
+    asserts:
+      - isKind:
+          of: PersistentVolumeClaim
+      - equal:
+          path: metadata.name
+          value: RELEASE-NAME-uptime-kuma-pvc
+      - equal:
+          path: spec.resources.requests.storage
+          value: 4Gi
+      - contains:
+          path: spec.accessModes
+          content: ReadWriteOnce
+
+  - it: should not create PVC when volume is disabled
+    set:
+      volume:
+        enabled: false
+    asserts:
+      - hasDocuments:
+          count: 0
+
+  - it: should not create PVC when existingClaim is set
+    set:
+      volume:
+        enabled: true
+        existingClaim: "my-existing-pvc"
+    asserts:
+      - hasDocuments:
+          count: 0
+
+  - it: should set custom storage class
+    set:
+      volume:
+        enabled: true
+        size: 8Gi
+        storageClassName: "fast-ssd"
+    asserts:
+      - equal:
+          path: spec.storageClassName
+          value: "fast-ssd"
+
+  - it: should set custom access mode
+    set:
+      volume:
+        enabled: true
+        accessMode: ReadWriteMany
+    asserts:
+      - contains:
+          path: spec.accessModes
+          content: ReadWriteMany
+
+  - it: should be in correct namespace
+    set:
+      volume:
+        enabled: true
+      namespaceOverride: "monitoring"
+    asserts:
+      - equal:
+          path: metadata.namespace
+          value: monitoring
