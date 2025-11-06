@@ -9,6 +9,7 @@
   "pre-commit": {
     "enabled": true
   },
+  "allowedCommands": ["./scripts/bump-chart-version.sh", "./scripts/update-app-version.sh"],
   "packageRules": [
     {
       "matchManagers": ["pre-commit", "github-actions"],
