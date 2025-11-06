@@ -12,8 +12,8 @@ sources:
   - https://github.com/louislam/uptime-kuma
 dependencies:
   - name: mariadb
-    version: 21.0.7
+    version: 23.2.2
     repository: https://charts.bitnami.com/bitnami
     condition: mariadb.enabled
 type: application
-version: 2.22.1
+version: 2.23.0
