@@ -165,7 +165,7 @@ additionalVolumeMounts:
   #   subPath: "additional-ca.pem"
 
 strategy:
-  type: Recreate
+  type: RollingUpdate
 
 # Mariadb configurations
 mariadb:
