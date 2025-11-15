@@ -6,11 +6,13 @@ image:
   repository: louislam/uptime-kuma
   pullPolicy: IfNotPresent
   # Overrides the image tag whose default is the chart appVersion.
-  tag: "1.23.3-debian"
+  tag: "1.23.16-debian"
 
 imagePullSecrets: []
 nameOverride: ""
 fullnameOverride: ""
+# -- A custom namespace to override the default namespace for the deployed resources.
+namespaceOverride: ""
 
 # If this option is set to false a StateFulset instead of a Deployment is used
 useDeploy: true
@@ -28,10 +30,10 @@ podAnnotations: {}
 podLabels:
   {}
   # app: uptime-kuma
-podEnv:
-  # a default port must be set. required by container
-  - name: "UPTIME_KUMA_PORT"
-    value: "3001"
+podEnv: []
+  # optional additional environment variables
+  # - name: "A_VARIABLE"
+  #   value: "a-value"
 
 podSecurityContext:
   {}
@@ -72,7 +74,6 @@ ingress:
         proxy_set_header Connection "upgrade";
         proxy_set_header X-Real-IP $remote_addr;
         proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
-        proxy_set_header   Upgrade $http_upgrade;
         proxy_cache_bypass $http_upgrade;
       }
   hosts:
@@ -108,12 +109,33 @@ affinity: {}
 
 livenessProbe:
   enabled: true
+  failureThreshold: 3
+  # Uptime-Kuma recommends to configure a delay of 180 seconds until the server fully started.
+  # https://github.com/louislam/uptime-kuma/blob/ae224f9e188b1fc32ed8729818710975589cdce7/extra/healthcheck.go#L3
+  initialDelaySeconds: 180
+  periodSeconds: 10
+  successThreshold: 1
   timeoutSeconds: 2
-  initialDelaySeconds: 15
+  # The NodeJS Version of this Healthcheck is no longer supported, therefore we don't specify a node command.
+  # https://github.com/louislam/uptime-kuma/blob/ae224f9e188b1fc32ed8729818710975589cdce7/extra/healthcheck.js#L6
+  exec:
+    command:
+      - "extra/healthcheck"
 
 readinessProbe:
   enabled: true
-  initialDelaySeconds: 5
+  initialDelaySeconds: 10
+  periodSeconds: 10
+  timeoutSeconds: 1
+  failureThreshold: 3
+  successThreshold: 1
+  exec:
+    command: []
+  httpGet:
+    path: /
+    port: 3001
+    scheme: HTTP
+    httpHeaders: []
 
 volume:
   enabled: true
@@ -144,6 +166,30 @@ additionalVolumeMounts:
 
 strategy:
   type: RollingUpdate
+
+# Mariadb configurations
+mariadb:
+  enabled: false
+  architecture: standalone
+  auth:
+    database: uptime_kuma
+    username: uptime_kuma
+    password: ""
+    rootPassword: ""
+
+# External MariaDB database configuration
+# Use this when you want to connect to an external database instead of deploying MariaDB
+externalDatabase:
+  enabled: false
+  hostname: ""
+  port: 3306
+  database: uptime_kuma
+  username: uptime_kuma
+  password: ""
+  # Use existing secret for database credentials
+  existingSecret: ""
+  existingSecretPasswordKey: "password"
+  existingSecretUsernameKey: "username"
 
 # Prometheus ServiceMonitor configuration
 serviceMonitor:
@@ -182,3 +228,26 @@ dnsPolicy: ""
 
 # -- Use this option to set custom DNS configurations to the created deployment
 dnsConfig: {}
+
+# -- Use this option to set custom PriorityClass to the created deployment
+# ref: https://kubernetes.io/docs/concepts/scheduling-eviction/pod-priority-preemption/#priorityclass
+priorityClassName: ""
+
+# -- Create a NetworkPolicy
+networkPolicy:
+  # -- Enable/disable Network Policy
+  enabled: false
+  # -- Enable/disable Ingress policy type
+  ingress: true
+  # -- Enable/disable Egress policy type
+  egress: true
+  # -- Allow incoming connections only from specific Pods
+  # When set to true, the geoserver will accept connections from any source.
+  # When false, only Pods with the label {{ include "geoserver.fullname" . }}-client=true will have network access
+  allowExternal: true
+  # -- Selects particular namespaces for which all Pods are allowed as ingress sources
+  namespaceSelector: {}
+  #  matchLabels:
+  #    role: frontend
+  #  matchExpressions:
+  #   - {key: role, operator: In, values: [frontend]}

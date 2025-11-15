@@ -1,13 +1,19 @@
 {{- if not .Values.useDeploy -}}
+{{- include "uptime-kuma.validateDbConfig" . -}}
 apiVersion: apps/v1
 kind: StatefulSet
 metadata:
   name: {{ include "uptime-kuma.fullname" . }}
+  namespace: {{ include "uptime-kuma.namespace" . }}
   labels:
     {{- include "uptime-kuma.labels" . | nindent 4 }}
 spec:
   serviceName: {{ include "uptime-kuma.fullname" . }}
   replicas: 1
+  {{- with .Values.strategy }}
+  updateStrategy:
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
   selector:
     matchLabels:
       {{- include "uptime-kuma.selectorLabels" . | nindent 6 }}
@@ -26,6 +32,7 @@ spec:
           {{- toYaml .Values.podLabels | nindent 8 }}
         {{- end }}
     spec:
+      automountServiceAccountToken: {{ include "uptime-kuma.automountServiceAccountToken" . }}
       {{- with .Values.imagePullSecrets }}
       imagePullSecrets:
         {{- toYaml . | nindent 8 }}
@@ -41,19 +48,68 @@ spec:
       dnsConfig:
         {{- toYaml .Values.dnsConfig | nindent 8 }}
       {{- end }}
+      {{- if .Values.priorityClassName }}
+      priorityClassName: {{ .Values.priorityClassName | quote }}
+      {{- end }}
       containers:
         - name: {{ .Chart.Name }}
           securityContext:
             {{- toYaml .Values.securityContext | nindent 12 }}
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
-          {{- with .Values.podEnv }}
           env:
+            - name: "UPTIME_KUMA_PORT"
+              value: {{ include "uptime-kuma.port" . | quote }}
+            {{- with .Values.podEnv }}
             {{- toYaml . | nindent 12 }}
-          {{- end }}
+            {{- end }}
+            {{- if .Values.mariadb.enabled }}
+            - name: UPTIME_KUMA_DB_TYPE
+              value: "mariadb"
+            - name: UPTIME_KUMA_DB_HOSTNAME
+              value: "{{ .Release.Name }}-mariadb"
+            - name: UPTIME_KUMA_DB_PORT
+              value: "3306"
+            - name: UPTIME_KUMA_DB_NAME
+              value: "{{ .Values.mariadb.auth.database }}"
+            - name: UPTIME_KUMA_DB_USERNAME
+              value: "{{ .Values.mariadb.auth.username }}"
+            - name: UPTIME_KUMA_DB_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: "{{ .Release.Name }}-mariadb"
+                  key: "mariadb-password"
+            {{- else if .Values.externalDatabase.enabled }}
+            - name: UPTIME_KUMA_DB_TYPE
+              value: "mariadb"
+            - name: UPTIME_KUMA_DB_HOSTNAME
+              value: "{{ .Values.externalDatabase.hostname }}"
+            - name: UPTIME_KUMA_DB_PORT
+              value: "{{ .Values.externalDatabase.port }}"
+            - name: UPTIME_KUMA_DB_NAME
+              value: "{{ .Values.externalDatabase.database }}"
+            - name: UPTIME_KUMA_DB_USERNAME
+              {{- if .Values.externalDatabase.existingSecret }}
+              valueFrom:
+                secretKeyRef:
+                  name: "{{ .Values.externalDatabase.existingSecret }}"
+                  key: "{{ .Values.externalDatabase.existingSecretUsernameKey }}"
+              {{- else }}
+              value: "{{ .Values.externalDatabase.username }}"
+              {{- end }}
+            - name: UPTIME_KUMA_DB_PASSWORD
+              {{- if .Values.externalDatabase.existingSecret }}
+              valueFrom:
+                secretKeyRef:
+                  name: "{{ .Values.externalDatabase.existingSecret }}"
+                  key: "{{ .Values.externalDatabase.existingSecretPasswordKey }}"
+              {{- else }}
+              value: "{{ .Values.externalDatabase.password }}"
+              {{- end }}
+            {{- end }}
           ports:
             - name: http
-              containerPort: 3001
+              containerPort: {{ include "uptime-kuma.port" . }}
               protocol: TCP
           {{ if or .Values.volume.enabled .Values.additionalVolumeMounts -}}
           volumeMounts:
@@ -67,22 +123,59 @@ spec:
           {{- end }}
           {{- if .Values.livenessProbe.enabled }}
           livenessProbe:
+            {{- if .Values.livenessProbe.enabled }}
+            initialDelaySeconds: {{ .Values.livenessProbe.initialDelaySeconds }}
+            periodSeconds: {{ .Values.livenessProbe.periodSeconds }}
+            timeoutSeconds: {{ .Values.livenessProbe.timeoutSeconds }}
+            failureThreshold: {{ .Values.livenessProbe.failureThreshold }}
+            successThreshold: {{ .Values.livenessProbe.successThreshold }}
+            {{- if .Values.livenessProbe.exec.command }}
             exec:
               command:
-                - extra/healthcheck
-            timeoutSeconds: {{ .Values.livenessProbe.timeoutSeconds}}
-            initialDelaySeconds: {{ .Values.livenessProbe.initialDelaySeconds}}
+                {{- toYaml .Values.livenessProbe.exec.command | nindent 16 }}
+            {{- end }}
+            {{- end }}
           {{- end }}
-          {{- if .Values.readinessProbe.enabled }}
           readinessProbe:
+            {{- if .Values.readinessProbe.enabled }}
+            initialDelaySeconds: {{ .Values.readinessProbe.initialDelaySeconds }}
+            periodSeconds: {{ .Values.readinessProbe.periodSeconds }}
+            timeoutSeconds: {{ .Values.readinessProbe.timeoutSeconds }}
+            failureThreshold: {{ .Values.readinessProbe.failureThreshold }}
+            successThreshold: {{ .Values.readinessProbe.successThreshold }}
+            {{- if .Values.readinessProbe.exec.command }}
+            exec:
+              command:
+                {{- toYaml .Values.readinessProbe.exec.command | nindent 16 }}
+            {{- else if .Values.readinessProbe.httpGet.path }}
             httpGet:
-              path: /
-              port: 3001
-              scheme: HTTP
-            initialDelaySeconds: {{ .Values.readinessProbe.initialDelaySeconds}}
-          {{- end }}
+              path: {{ .Values.readinessProbe.httpGet.path }}
+              port: {{ .Values.readinessProbe.httpGet.port }}
+              scheme: {{ .Values.readinessProbe.httpGet.scheme }}
+              {{- if .Values.readinessProbe.httpGet.httpHeaders }}
+              httpHeaders:
+                {{- toYaml .Values.readinessProbe.httpGet.httpHeaders | nindent 16 }}
+              {{- end }}
+            {{- end }}
+            {{- end }}
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
+      {{- if .Values.mariadb.enabled }}
+      initContainers:
+        - name: wait-for-db
+          image: busybox:latest
+          command:
+            - "/bin/sh"
+            - "-c"
+            - "until nc -z {{ .Release.Name }}-mariadb 3306; do echo 'Waiting for MariaDB...'; sleep 2; done; echo 'MariaDB is ready!'"
+          resources:
+            limits:
+              memory: "64Mi"
+              cpu: "100m"
+            requests:
+              memory: "32Mi"
+              cpu: "50m"
+      {{- end }}
       {{- with .Values.nodeSelector }}
       nodeSelector:
         {{- toYaml . | nindent 8 }}

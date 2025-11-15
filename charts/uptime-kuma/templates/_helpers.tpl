@@ -51,6 +51,13 @@ app.kubernetes.io/instance: {{ .Release.Name }}
 {{- end }}
 
 {{/*
+Port of the Uptime Kuma container
+*/}}
+{{- define "uptime-kuma.port" -}}
+3001
+{{- end }}
+
+{{/*
 Create the name of the service account to use
 */}}
 {{- define "uptime-kuma.serviceAccountName" -}}
@@ -58,5 +65,32 @@ Create the name of the service account to use
 {{- default (include "uptime-kuma.fullname" .) .Values.serviceAccount.name }}
 {{- else }}
 {{- default "default" .Values.serviceAccount.name }}
+{{- end }}
+{{- end }}
+
+{{/*
+Set automountServiceAccountToken when service account is created
+*/}}
+{{- define "uptime-kuma.automountServiceAccountToken" -}}
+{{- default .Values.serviceAccount.create }}
+{{- end }}
+
+{{/*
+Determine the namespace to use, allowing for a namespace override.
+*/}}
+{{- define "uptime-kuma.namespace" -}}
+  {{- if .Values.namespaceOverride }}
+    {{- .Values.namespaceOverride }}
+  {{- else }}
+    {{- .Release.Namespace }}
+  {{- end }}
+{{- end }}
+
+{{/*
+Validate configuration for conflicting settings
+*/}}
+{{- define "uptime-kuma.validateDbConfig" -}}
+{{- if and .Values.mariadb.enabled .Values.externalDatabase.enabled }}
+{{- fail "Cannot enable both MariaDB (.Values.mariadb.enabled) and external database (.Values.externalDatabase.enabled). Please choose one." }}
 {{- end }}
 {{- end }}

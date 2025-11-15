@@ -1,6 +1,6 @@
 # uptime-kuma
 
-![Version: 2.15.0](https://img.shields.io/badge/Version-2.15.0-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 1.23.3](https://img.shields.io/badge/AppVersion-1.23.3-informational?style=flat-square)
+![Version: 2.22.0](https://img.shields.io/badge/Version-2.22.0-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 1.23.16](https://img.shields.io/badge/AppVersion-1.23.16-informational?style=flat-square)
 
 A self-hosted Monitoring tool like "Uptime-Robot".
 
@@ -16,6 +16,12 @@ A self-hosted Monitoring tool like "Uptime-Robot".
 
 * <https://github.com/louislam/uptime-kuma>
 
+## Requirements
+
+| Repository | Name | Version |
+|------------|------|---------|
+| https://charts.bitnami.com/bitnami | mariadb | 21.0.7 |
+
 ## Values
 
 | Key | Type | Default | Description |
@@ -25,10 +31,19 @@ A self-hosted Monitoring tool like "Uptime-Robot".
 | affinity | object | `{}` |  |
 | dnsConfig | object | `{}` | Use this option to set custom DNS configurations to the created deployment |
 | dnsPolicy | string | `""` | Use this option to set a custom DNS policy to the created deployment |
+| externalDatabase.database | string | `"uptime_kuma"` |  |
+| externalDatabase.enabled | bool | `false` |  |
+| externalDatabase.existingSecret | string | `""` |  |
+| externalDatabase.existingSecretPasswordKey | string | `"password"` |  |
+| externalDatabase.existingSecretUsernameKey | string | `"username"` |  |
+| externalDatabase.hostname | string | `""` |  |
+| externalDatabase.password | string | `""` |  |
+| externalDatabase.port | int | `3306` |  |
+| externalDatabase.username | string | `"uptime_kuma"` |  |
 | fullnameOverride | string | `""` |  |
 | image.pullPolicy | string | `"IfNotPresent"` |  |
 | image.repository | string | `"louislam/uptime-kuma"` |  |
-| image.tag | string | `"1.23.3-debian"` |  |
+| image.tag | string | `"1.23.16-debian"` |  |
 | imagePullSecrets | list | `[]` |  |
 | ingress.annotations."nginx.ingress.kubernetes.io/proxy-read-timeout" | string | `"3600"` |  |
 | ingress.annotations."nginx.ingress.kubernetes.io/proxy-send-timeout" | string | `"3600"` |  |
@@ -40,17 +55,43 @@ A self-hosted Monitoring tool like "Uptime-Robot".
 | ingress.hosts[0].paths[0].pathType | string | `"ImplementationSpecific"` |  |
 | ingress.tls | list | `[]` |  |
 | livenessProbe.enabled | bool | `true` |  |
-| livenessProbe.initialDelaySeconds | int | `15` |  |
+| livenessProbe.exec.command[0] | string | `"extra/healthcheck"` |  |
+| livenessProbe.failureThreshold | int | `3` |  |
+| livenessProbe.initialDelaySeconds | int | `180` |  |
+| livenessProbe.periodSeconds | int | `10` |  |
+| livenessProbe.successThreshold | int | `1` |  |
 | livenessProbe.timeoutSeconds | int | `2` |  |
+| mariadb.architecture | string | `"standalone"` |  |
+| mariadb.auth.database | string | `"uptime_kuma"` |  |
+| mariadb.auth.password | string | `""` |  |
+| mariadb.auth.rootPassword | string | `""` |  |
+| mariadb.auth.username | string | `"uptime_kuma"` |  |
+| mariadb.enabled | bool | `false` |  |
 | nameOverride | string | `""` |  |
+| namespaceOverride | string | `""` | A custom namespace to override the default namespace for the deployed resources. |
+| networkPolicy | object | `{"allowExternal":true,"egress":true,"enabled":false,"ingress":true,"namespaceSelector":{}}` | Create a NetworkPolicy |
+| networkPolicy.allowExternal | bool | `true` | Allow incoming connections only from specific Pods When set to true, the geoserver will accept connections from any source. When false, only Pods with the label {{ include "geoserver.fullname" . }}-client=true will have network access |
+| networkPolicy.egress | bool | `true` | Enable/disable Egress policy type |
+| networkPolicy.enabled | bool | `false` | Enable/disable Network Policy |
+| networkPolicy.ingress | bool | `true` | Enable/disable Ingress policy type |
+| networkPolicy.namespaceSelector | object | `{}` | Selects particular namespaces for which all Pods are allowed as ingress sources |
 | nodeSelector | object | `{}` |  |
 | podAnnotations | object | `{}` |  |
-| podEnv[0].name | string | `"UPTIME_KUMA_PORT"` |  |
-| podEnv[0].value | string | `"3001"` |  |
+| podEnv | list | `[]` |  |
 | podLabels | object | `{}` |  |
 | podSecurityContext | object | `{}` |  |
+| priorityClassName | string | `""` | Use this option to set custom PriorityClass to the created deployment ref: https://kubernetes.io/docs/concepts/scheduling-eviction/pod-priority-preemption/#priorityclass |
 | readinessProbe.enabled | bool | `true` |  |
-| readinessProbe.initialDelaySeconds | int | `5` |  |
+| readinessProbe.exec.command | list | `[]` |  |
+| readinessProbe.failureThreshold | int | `3` |  |
+| readinessProbe.httpGet.httpHeaders | list | `[]` |  |
+| readinessProbe.httpGet.path | string | `"/"` |  |
+| readinessProbe.httpGet.port | int | `3001` |  |
+| readinessProbe.httpGet.scheme | string | `"HTTP"` |  |
+| readinessProbe.initialDelaySeconds | int | `10` |  |
+| readinessProbe.periodSeconds | int | `10` |  |
+| readinessProbe.successThreshold | int | `1` |  |
+| readinessProbe.timeoutSeconds | int | `1` |  |
 | resources | object | `{}` |  |
 | securityContext | object | `{}` |  |
 | service.annotations | object | `{}` |  |
@@ -80,4 +121,4 @@ A self-hosted Monitoring tool like "Uptime-Robot".
 | volume.size | string | `"4Gi"` |  |
 
 ----------------------------------------------
-Autogenerated from chart metadata using [helm-docs v1.11.3](https://github.com/norwoodj/helm-docs/releases/v1.11.3)
+Autogenerated from chart metadata using [helm-docs v1.14.2](https://github.com/norwoodj/helm-docs/releases/v1.14.2)
