@@ -5,11 +5,20 @@
   "schedule": ["at any time"],
   "assignees": ["dirsigler"],
   "reviewers": ["dirsigler"],
-  "enabledManagers": ["helmv3", "pre-commit", "helm-values", "github-actions"],
+  "enabledManagers": ["helmv3", "pre-commit", "helm-values", "github-actions", "custom.regex"],
   "pre-commit": {
     "enabled": true
   },
-  "allowedCommands": ["./scripts/bump-chart-version.sh", "./scripts/update-app-version.sh"],
+  "customManagers": [
+    {
+      "customType": "regex",
+      "fileMatch": ["^\\.github/workflows/lint-test\\.yaml$"],
+      "matchStrings": ["          - (?<currentValue>v\\d+\\.\\d+\\.\\d+)"],
+      "depNameTemplate": "kindest/node",
+      "datasourceTemplate": "docker",
+      "versioningTemplate": "semver"
+    }
+  ],
   "packageRules": [
     {
       "matchManagers": ["pre-commit", "github-actions"],
@@ -37,6 +46,10 @@
         "commands": ["./scripts/update-app-version.sh"],
         "executionMode": "branch"
       }
+    },
+    {
+      "matchManagers": ["custom.regex"],
+      "groupName": "k8s versions"
     }
   ]
 }
