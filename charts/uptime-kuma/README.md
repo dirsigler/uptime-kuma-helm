@@ -1,6 +1,6 @@
 # uptime-kuma
 
-![Version: 2.22.0](https://img.shields.io/badge/Version-2.22.0-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 1.23.16](https://img.shields.io/badge/AppVersion-1.23.16-informational?style=flat-square)
+![Version: 2.23.1](https://img.shields.io/badge/Version-2.23.1-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 1.23.17](https://img.shields.io/badge/AppVersion-1.23.17-informational?style=flat-square)
 
 A self-hosted Monitoring tool like "Uptime-Robot".
 
@@ -20,7 +20,7 @@ A self-hosted Monitoring tool like "Uptime-Robot".
 
 | Repository | Name | Version |
 |------------|------|---------|
-| https://charts.bitnami.com/bitnami | mariadb | 21.0.7 |
+| https://charts.bitnami.com/bitnami | mariadb | 23.2.2 |
 
 ## Values
 
@@ -43,11 +43,11 @@ A self-hosted Monitoring tool like "Uptime-Robot".
 | fullnameOverride | string | `""` |  |
 | image.pullPolicy | string | `"IfNotPresent"` |  |
 | image.repository | string | `"louislam/uptime-kuma"` |  |
-| image.tag | string | `"1.23.16-debian"` |  |
+| image.tag | string | `"1.23.17-debian"` |  |
 | imagePullSecrets | list | `[]` |  |
 | ingress.annotations."nginx.ingress.kubernetes.io/proxy-read-timeout" | string | `"3600"` |  |
 | ingress.annotations."nginx.ingress.kubernetes.io/proxy-send-timeout" | string | `"3600"` |  |
-| ingress.annotations."nginx.ingress.kubernetes.io/server-snippets" | string | `"location / {\n  proxy_set_header Upgrade $http_upgrade;\n  proxy_http_version 1.1;\n  proxy_set_header X-Forwarded-Host $http_host;\n  proxy_set_header X-Forwarded-Proto $scheme;\n  proxy_set_header X-Forwarded-For $remote_addr;\n  proxy_set_header Host $host;\n  proxy_set_header Connection \"upgrade\";\n  proxy_set_header X-Real-IP $remote_addr;\n  proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;\n  proxy_set_header   Upgrade $http_upgrade;\n  proxy_cache_bypass $http_upgrade;\n}\n"` |  |
+| ingress.annotations."nginx.ingress.kubernetes.io/server-snippets" | string | `"location / {\n  proxy_set_header Upgrade $http_upgrade;\n  proxy_http_version 1.1;\n  proxy_set_header X-Forwarded-Host $http_host;\n  proxy_set_header X-Forwarded-Proto $scheme;\n  proxy_set_header X-Forwarded-For $remote_addr;\n  proxy_set_header Host $host;\n  proxy_set_header Connection \"upgrade\";\n  proxy_set_header X-Real-IP $remote_addr;\n  proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;\n  proxy_cache_bypass $http_upgrade;\n}\n"` |  |
 | ingress.enabled | bool | `false` |  |
 | ingress.extraLabels | object | `{}` |  |
 | ingress.hosts[0].host | string | `"chart-example.local"` |  |
@@ -112,7 +112,7 @@ A self-hosted Monitoring tool like "Uptime-Robot".
 | serviceMonitor.scrapeTimeout | string | `"10s"` | Timeout if metrics can't be retrieved in given time interval |
 | serviceMonitor.selector | object | `{}` | Prometheus ServiceMonitor selector, only select Prometheus's with these labels (if not set, select any Prometheus) |
 | serviceMonitor.tlsConfig | object | `{}` | TLS configuration to use when scraping, only applicable for scheme https. |
-| strategy.type | string | `"Recreate"` |  |
+| strategy.type | string | `"RollingUpdate"` |  |
 | tolerations | list | `[]` |  |
 | useDeploy | bool | `true` |  |
 | volume.accessMode | string | `"ReadWriteOnce"` |  |
