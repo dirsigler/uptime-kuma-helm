@@ -26,6 +26,11 @@ jobs:
         with:
           version: v3.4.0
 
+      # https://github.com/helm/chart-releaser?tab=readme-ov-file#dealing-with-charts-that-have-dependencies
+      - name: Add dependencies
+        run: |
+          helm repo add bitnami https://charts.bitnami.com/bitnami
+
       # - name: Prepare GPG Key
       #   run: |
       #     base64 -d <<< "$GPG_KEYRING_BASE64" > $HOME/secring.gpg
