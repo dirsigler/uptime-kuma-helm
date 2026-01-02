@@ -142,6 +142,35 @@ tests:
             persistentVolumeClaim:
               claimName: RELEASE-NAME-uptime-kuma-pvc
 
+  - it: should configure subPath when specified
+    set:
+      useDeploy: true
+      volume:
+        enabled: true
+        subPath: "my-subdirectory"
+    asserts:
+      - contains:
+          path: spec.template.spec.containers[0].volumeMounts
+          content:
+            name: storage
+            mountPath: /app/data
+            subPath: "my-subdirectory"
+
+  - it: should not configure subPath when not specified
+    set:
+      useDeploy: true
+      volume:
+        enabled: true
+        subPath: ""
+    asserts:
+      - contains:
+          path: spec.template.spec.containers[0].volumeMounts
+          content:
+            name: storage
+            mountPath: /app/data
+      - notExists:
+          path: spec.template.spec.containers[0].volumeMounts[?(@.name == 'storage')].subPath
+
   - it: should set resource limits and requests
     set:
       useDeploy: true

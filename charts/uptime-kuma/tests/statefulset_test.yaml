@@ -100,6 +100,35 @@ tests:
           path: spec.volumeClaimTemplates[0].spec.resources.requests.storage
           value: 4Gi
 
+  - it: should configure subPath when specified
+    set:
+      useDeploy: false
+      volume:
+        enabled: true
+        subPath: "my-subdirectory"
+    asserts:
+      - contains:
+          path: spec.template.spec.containers[0].volumeMounts
+          content:
+            name: storage
+            mountPath: /app/data
+            subPath: "my-subdirectory"
+
+  - it: should not configure subPath when not specified
+    set:
+      useDeploy: false
+      volume:
+        enabled: true
+        subPath: ""
+    asserts:
+      - contains:
+          path: spec.template.spec.containers[0].volumeMounts
+          content:
+            name: storage
+            mountPath: /app/data
+      - notExists:
+          path: spec.template.spec.containers[0].volumeMounts[?(@.name == 'storage')].subPath
+
   - it: should create init container when MariaDB is enabled
     set:
       useDeploy: false
