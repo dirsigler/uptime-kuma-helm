@@ -118,7 +118,9 @@ spec:
           volumeMounts:
             - mountPath: "/usr/src/state"
               name: storage
-              subPath: "tailscale-state"
+              {{- if .Values.tailscale.stateSubPath }}
+              subPath: {{ .Values.tailscale.stateSubPath }}
+              {{- end }}
           {{- end -}}
 
         {{- end }}

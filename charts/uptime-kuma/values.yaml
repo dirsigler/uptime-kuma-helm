@@ -278,3 +278,5 @@ tailscale:
   auth: ""
   # Tailscale device name
   hostname: "uptime-kuma"
+  # Optional subPath to store Tailscale state in a subdirectory of the volume
+  stateSubPath: ""
