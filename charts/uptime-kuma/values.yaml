@@ -259,7 +259,7 @@ networkPolicy:
 # ref: https://kubernetes.io/docs/concepts/workloads/pods/sidecar-containers/
 initContainers: []
 
-#Add a tailscale sidecar
+# Add a tailscale sidecar
 tailscale:
   enabled: false
   image:
