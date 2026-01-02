@@ -16,4 +16,4 @@ dependencies:
     repository: https://charts.bitnami.com/bitnami
     condition: mariadb.enabled
 type: application
-version: 2.24.0
+version: 2.24.1
