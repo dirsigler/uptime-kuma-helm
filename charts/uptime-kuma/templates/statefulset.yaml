@@ -51,10 +51,27 @@ spec:
       {{- if .Values.priorityClassName }}
       priorityClassName: {{ .Values.priorityClassName | quote }}
       {{- end }}
-      {{- with .Values.initContainers }}
+      {{- if or .Values.mariadb.enabled .Values.initContainers }}
       initContainers:
+        {{- if .Values.mariadb.enabled }}
+        - name: wait-for-db
+          image: busybox:latest
+          command:
+            - "/bin/sh"
+            - "-c"
+            - "until nc -z {{ .Release.Name }}-mariadb 3306; do echo 'Waiting for MariaDB...'; sleep 2; done; echo 'MariaDB is ready!'"
+          resources:
+            limits:
+              memory: "64Mi"
+              cpu: "100m"
+            requests:
+              memory: "32Mi"
+              cpu: "50m"
+        {{- end }}
+        {{- with .Values.initContainers }}
         {{- toYaml . | nindent 8 }}
-      {{- end }}      
+        {{- end }}
+      {{- end }}
       containers:
         - name: {{ .Chart.Name }}
           securityContext:
@@ -164,22 +181,6 @@ spec:
             {{- end }}
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
-      {{- if .Values.mariadb.enabled }}
-      initContainers:
-        - name: wait-for-db
-          image: busybox:latest
-          command:
-            - "/bin/sh"
-            - "-c"
-            - "until nc -z {{ .Release.Name }}-mariadb 3306; do echo 'Waiting for MariaDB...'; sleep 2; done; echo 'MariaDB is ready!'"
-          resources:
-            limits:
-              memory: "64Mi"
-              cpu: "100m"
-            requests:
-              memory: "32Mi"
-              cpu: "50m"
-      {{- end }}
       {{- with .Values.nodeSelector }}
       nodeSelector:
         {{- toYaml . | nindent 8 }}
