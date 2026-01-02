@@ -137,6 +137,9 @@ spec:
             {{- if .Values.volume.enabled }}
             - mountPath: /app/data
               name: storage
+              {{- if .Values.volume.subPath }}
+              subPath: {{ .Values.volume.subPath }}
+              {{- end }}
             {{- end -}}
             {{ with .Values.additionalVolumeMounts }}
               {{- toYaml . | nindent 12 }}
