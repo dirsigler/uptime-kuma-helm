@@ -12,7 +12,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
         with:
           fetch-depth: 0
 
@@ -26,6 +26,11 @@ jobs:
         with:
           version: v3.4.0
 
+      # https://github.com/helm/chart-releaser?tab=readme-ov-file#dealing-with-charts-that-have-dependencies
+      - name: Add dependencies
+        run: |
+          helm repo add bitnami https://charts.bitnami.com/bitnami
+
       # - name: Prepare GPG Key
       #   run: |
       #     base64 -d <<< "$GPG_KEYRING_BASE64" > $HOME/secring.gpg
@@ -38,7 +43,7 @@ jobs:
       #     GPG_PASSPHRASE: "${{ secrets.GPG_PASSPHRASE}}"
 
       - name: Run chart-releaser
-        uses: helm/chart-releaser-action@v1.6.0
+        uses: helm/chart-releaser-action@v1.7.0
         with:
           config: "./.github/configs/cr.yaml"
         env:

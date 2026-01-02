@@ -1,20 +1,55 @@
 {
   "$schema": "https://docs.renovatebot.com/renovate-schema.json",
-  "extends": ["config:base", ":disableDependencyDashboard", ":enablePreCommit"],
+  "extends": ["config:recommended", ":disableDependencyDashboard", ":enablePreCommit"],
   "timezone": "Europe/Berlin",
   "schedule": ["at any time"],
   "assignees": ["dirsigler"],
   "reviewers": ["dirsigler"],
-  "enabledManagers": ["helmv3", "pre-commit", "helm-values", "github-actions"],
+  "enabledManagers": ["helmv3", "pre-commit", "helm-values", "github-actions", "custom.regex"],
   "pre-commit": {
     "enabled": true
   },
+  "customManagers": [
+    {
+      "customType": "regex",
+      "fileMatch": ["^\\.github/workflows/lint-test\\.yaml$"],
+      "matchStrings": ["          - (?<currentValue>v\\d+\\.\\d+\\.\\d+)"],
+      "depNameTemplate": "kindest/node",
+      "datasourceTemplate": "docker",
+      "versioningTemplate": "semver"
+    }
+  ],
   "packageRules": [
     {
-      "matchManagers": ["pre-commit", "helmv3", "helm-values", "github-actions"],
+      "matchManagers": ["pre-commit", "github-actions"],
       "matchUpdateTypes": ["minor", "patch", "pin", "digest"],
       "groupName": "all",
       "automerge": false
+    },
+    {
+      "matchManagers": ["helmv3"],
+      "matchDatasources": ["helm"],
+      "matchUpdateTypes": ["minor", "patch", "pin", "digest"],
+      "groupName": "all",
+      "automerge": false,
+      "postUpgradeTasks": {
+        "commands": ["./scripts/bump-chart-version.sh"],
+        "executionMode": "branch"
+      }
+    },
+    {
+      "matchManagers": ["helm-values"],
+      "matchUpdateTypes": ["minor", "patch", "pin", "digest"],
+      "groupName": "all",
+      "automerge": false,
+      "postUpgradeTasks": {
+        "commands": ["./scripts/update-app-version.sh"],
+        "executionMode": "branch"
+      }
+    },
+    {
+      "matchManagers": ["custom.regex"],
+      "groupName": "k8s versions"
     }
   ]
 }

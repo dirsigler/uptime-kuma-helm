@@ -6,7 +6,7 @@ image:
   repository: louislam/uptime-kuma
   pullPolicy: IfNotPresent
   # Overrides the image tag whose default is the chart appVersion.
-  tag: "1.23.13-debian"
+  tag: "1.23.17-debian"
 
 imagePullSecrets: []
 nameOverride: ""
@@ -74,7 +74,6 @@ ingress:
         proxy_set_header Connection "upgrade";
         proxy_set_header X-Real-IP $remote_addr;
         proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
-        proxy_set_header   Upgrade $http_upgrade;
         proxy_cache_bypass $http_upgrade;
       }
   hosts:
@@ -166,7 +165,31 @@ additionalVolumeMounts:
   #   subPath: "additional-ca.pem"
 
 strategy:
-  type: Recreate
+  type: RollingUpdate
+
+# Mariadb configurations
+mariadb:
+  enabled: false
+  architecture: standalone
+  auth:
+    database: uptime_kuma
+    username: uptime_kuma
+    password: ""
+    rootPassword: ""
+
+# External MariaDB database configuration
+# Use this when you want to connect to an external database instead of deploying MariaDB
+externalDatabase:
+  enabled: false
+  hostname: ""
+  port: 3306
+  database: uptime_kuma
+  username: uptime_kuma
+  password: ""
+  # Use existing secret for database credentials
+  existingSecret: ""
+  existingSecretPasswordKey: "password"
+  existingSecretUsernameKey: "username"
 
 # Prometheus ServiceMonitor configuration
 serviceMonitor:

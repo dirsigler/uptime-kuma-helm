@@ -4,4 +4,5 @@ chart-dirs:
   - charts
 chart-repos:
   - uptime-kuma=https://dirsigler.github.io/uptime-kuma-helm
+  - bitnami=https://charts.bitnami.com/bitnami
 debug: true

@@ -1,0 +1,245 @@
+suite: test statefulset
+templates:
+  - statefulset.yaml
+tests:
+  - it: should create statefulset when useDeploy is false
+    set:
+      useDeploy: false
+    asserts:
+      - isKind:
+          of: StatefulSet
+      - equal:
+          path: metadata.name
+          value: RELEASE-NAME-uptime-kuma
+      - equal:
+          path: spec.replicas
+          value: 1
+
+  - it: should not create statefulset when useDeploy is true
+    set:
+      useDeploy: true
+    asserts:
+      - hasDocuments:
+          count: 0
+
+  - it: should set correct image
+    set:
+      useDeploy: false
+      image:
+        repository: louislam/uptime-kuma
+        tag: "1.23.16-debian"
+    asserts:
+      - equal:
+          path: spec.template.spec.containers[0].image
+          value: "louislam/uptime-kuma:1.23.16-debian"
+
+  - it: should configure MariaDB environment variables when enabled
+    set:
+      useDeploy: false
+      mariadb:
+        enabled: true
+        auth:
+          database: uptime_kuma
+          username: uptime_kuma
+    asserts:
+      - contains:
+          path: spec.template.spec.containers[0].env
+          content:
+            name: UPTIME_KUMA_DB_TYPE
+            value: "mariadb"
+      - contains:
+          path: spec.template.spec.containers[0].env
+          content:
+            name: UPTIME_KUMA_DB_HOSTNAME
+            value: "RELEASE-NAME-mariadb"
+      - contains:
+          path: spec.template.spec.containers[0].env
+          content:
+            name: UPTIME_KUMA_DB_NAME
+            value: "uptime_kuma"
+
+  - it: should configure external database environment variables when enabled
+    set:
+      useDeploy: false
+      externalDatabase:
+        enabled: true
+        hostname: "external-db.example.com"
+        port: 3306
+        database: uptime_kuma
+        username: uptime_kuma
+        password: "secret"
+    asserts:
+      - contains:
+          path: spec.template.spec.containers[0].env
+          content:
+            name: UPTIME_KUMA_DB_TYPE
+            value: "mariadb"
+      - contains:
+          path: spec.template.spec.containers[0].env
+          content:
+            name: UPTIME_KUMA_DB_HOSTNAME
+            value: "external-db.example.com"
+
+  - it: should configure volume claim template when volume is enabled
+    set:
+      useDeploy: false
+      volume:
+        enabled: true
+        size: 4Gi
+        accessMode: ReadWriteOnce
+    asserts:
+      - contains:
+          path: spec.template.spec.containers[0].volumeMounts
+          content:
+            name: storage
+            mountPath: /app/data
+      - equal:
+          path: spec.volumeClaimTemplates[0].metadata.name
+          value: storage
+      - equal:
+          path: spec.volumeClaimTemplates[0].spec.resources.requests.storage
+          value: 4Gi
+
+  - it: should create init container when MariaDB is enabled
+    set:
+      useDeploy: false
+      mariadb:
+        enabled: true
+    asserts:
+      - isNotEmpty:
+          path: spec.template.spec.initContainers
+      - equal:
+          path: spec.template.spec.initContainers[0].name
+          value: wait-for-db
+
+  - it: should configure service name
+    set:
+      useDeploy: false
+    asserts:
+      - equal:
+          path: spec.serviceName
+          value: RELEASE-NAME-uptime-kuma
+
+  - it: should set resource limits and requests
+    set:
+      useDeploy: false
+      resources:
+        limits:
+          cpu: 100m
+          memory: 128Mi
+        requests:
+          cpu: 100m
+          memory: 128Mi
+    asserts:
+      - equal:
+          path: spec.template.spec.containers[0].resources.limits.cpu
+          value: 100m
+      - equal:
+          path: spec.template.spec.containers[0].resources.requests.memory
+          value: 128Mi
+
+  - it: should always set UPTIME_KUMA_PORT environment variable
+    set:
+      useDeploy: false
+    asserts:
+      - contains:
+          path: spec.template.spec.containers[0].env
+          content:
+            name: "UPTIME_KUMA_PORT"
+            value: "3001"
+
+  - it: should configure strategy when specified
+    set:
+      useDeploy: false
+      strategy:
+        type: RollingUpdate
+        rollingUpdate:
+          partition: 0
+    asserts:
+      - equal:
+          path: spec.updateStrategy.type
+          value: RollingUpdate
+      - equal:
+          path: spec.updateStrategy.rollingUpdate.partition
+          value: 0
+
+  - it: should configure configurable liveness probe parameters
+    set:
+      useDeploy: false
+      livenessProbe:
+        enabled: true
+        initialDelaySeconds: 60
+        periodSeconds: 10
+        timeoutSeconds: 5
+        failureThreshold: 6
+        successThreshold: 1
+        exec:
+          command:
+            - extra/healthcheck
+    asserts:
+      - equal:
+          path: spec.template.spec.containers[0].livenessProbe.initialDelaySeconds
+          value: 60
+      - equal:
+          path: spec.template.spec.containers[0].livenessProbe.periodSeconds
+          value: 10
+      - equal:
+          path: spec.template.spec.containers[0].livenessProbe.timeoutSeconds
+          value: 5
+      - equal:
+          path: spec.template.spec.containers[0].livenessProbe.failureThreshold
+          value: 6
+      - equal:
+          path: spec.template.spec.containers[0].livenessProbe.successThreshold
+          value: 1
+      - contains:
+          path: spec.template.spec.containers[0].livenessProbe.exec.command
+          content: extra/healthcheck
+
+  - it: should configure configurable readiness probe parameters
+    set:
+      useDeploy: false
+      readinessProbe:
+        enabled: true
+        initialDelaySeconds: 30
+        periodSeconds: 5
+        timeoutSeconds: 3
+        failureThreshold: 3
+        successThreshold: 1
+        httpGet:
+          path: /
+          port: 3001
+          scheme: HTTP
+          httpHeaders:
+            - name: Host
+              value: example.com
+    asserts:
+      - equal:
+          path: spec.template.spec.containers[0].readinessProbe.initialDelaySeconds
+          value: 30
+      - equal:
+          path: spec.template.spec.containers[0].readinessProbe.periodSeconds
+          value: 5
+      - equal:
+          path: spec.template.spec.containers[0].readinessProbe.timeoutSeconds
+          value: 3
+      - equal:
+          path: spec.template.spec.containers[0].readinessProbe.failureThreshold
+          value: 3
+      - equal:
+          path: spec.template.spec.containers[0].readinessProbe.successThreshold
+          value: 1
+      - equal:
+          path: spec.template.spec.containers[0].readinessProbe.httpGet.path
+          value: /
+      - equal:
+          path: spec.template.spec.containers[0].readinessProbe.httpGet.port
+          value: 3001
+      - equal:
+          path: spec.template.spec.containers[0].readinessProbe.httpGet.scheme
+          value: HTTP
+      - contains:
+          path: spec.template.spec.containers[0].readinessProbe.httpGet.httpHeaders
+          content:
+            name: Host
+            value: example.com

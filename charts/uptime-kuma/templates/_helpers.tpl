@@ -85,3 +85,12 @@ Determine the namespace to use, allowing for a namespace override.
     {{- .Release.Namespace }}
   {{- end }}
 {{- end }}
+
+{{/*
+Validate configuration for conflicting settings
+*/}}
+{{- define "uptime-kuma.validateDbConfig" -}}
+{{- if and .Values.mariadb.enabled .Values.externalDatabase.enabled }}
+{{- fail "Cannot enable both MariaDB (.Values.mariadb.enabled) and external database (.Values.externalDatabase.enabled). Please choose one." }}
+{{- end }}
+{{- end }}
