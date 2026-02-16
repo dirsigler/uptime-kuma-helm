@@ -33,32 +33,39 @@ tests:
           path: spec.template.spec.containers[0].image
           value: "louislam/uptime-kuma:1.23.16-debian"
 
-  - it: should configure MariaDB environment variables when enabled
+  - it: should set database environment variables when external database is enabled
     set:
       useDeploy: true
-      mariadb:
+      externalDatabase:
         enabled: true
-        auth:
-          database: uptime_kuma
-          username: uptime_kuma
+        hostname: "mysql.example.com"
+        port: 3306
+        database: uptime_kuma
+        username: kuma_user
+        password: "kuma_pass"
     asserts:
-      - contains:
+      - isNotEmpty:
           path: spec.template.spec.containers[0].env
-          content:
-            name: UPTIME_KUMA_DB_TYPE
-            value: "mariadb"
-      - contains:
-          path: spec.template.spec.containers[0].env
-          content:
-            name: UPTIME_KUMA_DB_HOSTNAME
-            value: "RELEASE-NAME-mariadb"
-      - contains:
-          path: spec.template.spec.containers[0].env
-          content:
-            name: UPTIME_KUMA_DB_NAME
-            value: "uptime_kuma"
+      - matchRegex:
+          path: spec.template.spec.containers[0].env[?(@.name=="UPTIME_KUMA_DB_TYPE")].value
+          pattern: mariadb
+      - matchRegex:
+          path: spec.template.spec.containers[0].env[?(@.name=="UPTIME_KUMA_DB_HOSTNAME")].value
+          pattern: mysql.example.com
+      - matchRegex:
+          path: spec.template.spec.containers[0].env[?(@.name=="UPTIME_KUMA_DB_PORT")].value
+          pattern: "3306"
+      - matchRegex:
+          path: spec.template.spec.containers[0].env[?(@.name=="UPTIME_KUMA_DB_NAME")].value
+          pattern: uptime_kuma
+      - matchRegex:
+          path: spec.template.spec.containers[0].env[?(@.name=="UPTIME_KUMA_DB_USERNAME")].value
+          pattern: kuma_user
+      - matchRegex:
+          path: spec.template.spec.containers[0].env[?(@.name=="UPTIME_KUMA_DB_PASSWORD")].value
+          pattern: kuma_pass
 
-  - it: should configure external database environment variables when enabled
+  - it: should configure all external database environment variables when enabled
     set:
       useDeploy: true
       externalDatabase:
@@ -84,6 +91,21 @@ tests:
           content:
             name: UPTIME_KUMA_DB_PORT
             value: "3306"
+      - contains:
+          path: spec.template.spec.containers[0].env
+          content:
+            name: UPTIME_KUMA_DB_NAME
+            value: "uptime_kuma"
+      - contains:
+          path: spec.template.spec.containers[0].env
+          content:
+            name: UPTIME_KUMA_DB_USERNAME
+            value: "uptime_kuma"
+      - contains:
+          path: spec.template.spec.containers[0].env
+          content:
+            name: UPTIME_KUMA_DB_PASSWORD
+            value: "secret"
 
   - it: should use existing secret for external database
     set:
@@ -111,18 +133,6 @@ tests:
               secretKeyRef:
                 name: "my-db-secret"
                 key: "password"
-
-  - it: should create init container when MariaDB is enabled
-    set:
-      useDeploy: true
-      mariadb:
-        enabled: true
-    asserts:
-      - isNotEmpty:
-          path: spec.template.spec.initContainers
-      - equal:
-          path: spec.template.spec.initContainers[0].name
-          value: wait-for-db
 
   - it: should configure volume mounts when volume is enabled
     set:
