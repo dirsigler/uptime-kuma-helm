@@ -146,6 +146,8 @@ volume:
   # storageClassName:
   # Reuse your own pre-existing PVC.
   existingClaim: ""
+  # Optional subPath to mount a specific subdirectory of the volume
+  subPath: ""
 
 # -- A list of additional volumes to be added to the pod
 additionalVolumes:
@@ -251,3 +253,8 @@ networkPolicy:
   #    role: frontend
   #  matchExpressions:
   #   - {key: role, operator: In, values: [frontend]}
+
+# -- List of initialization or sidecar containers to be added to the deployment
+# ref: https://kubernetes.io/docs/concepts/workloads/pods/init-containers/
+# ref: https://kubernetes.io/docs/concepts/workloads/pods/sidecar-containers/
+initContainers: []

@@ -45,6 +45,7 @@ A self-hosted Monitoring tool like "Uptime-Robot".
 | image.repository | string | `"louislam/uptime-kuma"` |  |
 | image.tag | string | `"1.23.17-debian"` |  |
 | imagePullSecrets | list | `[]` |  |
+| initContainers | list | `[]` | List of initialization or sidecar containers to be added to the deployment |
 | ingress.annotations."nginx.ingress.kubernetes.io/proxy-read-timeout" | string | `"3600"` |  |
 | ingress.annotations."nginx.ingress.kubernetes.io/proxy-send-timeout" | string | `"3600"` |  |
 | ingress.annotations."nginx.ingress.kubernetes.io/server-snippets" | string | `"location / {\n  proxy_set_header Upgrade $http_upgrade;\n  proxy_http_version 1.1;\n  proxy_set_header X-Forwarded-Host $http_host;\n  proxy_set_header X-Forwarded-Proto $scheme;\n  proxy_set_header X-Forwarded-For $remote_addr;\n  proxy_set_header Host $host;\n  proxy_set_header Connection \"upgrade\";\n  proxy_set_header X-Real-IP $remote_addr;\n  proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;\n  proxy_cache_bypass $http_upgrade;\n}\n"` |  |
