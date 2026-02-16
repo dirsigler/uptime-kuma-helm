@@ -1,6 +1,6 @@
 # uptime-kuma
 
-![Version: 2.24.0](https://img.shields.io/badge/Version-2.24.0-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 1.23.17](https://img.shields.io/badge/AppVersion-1.23.17-informational?style=flat-square)
+![Version: 2.25.0](https://img.shields.io/badge/Version-2.25.0-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 1.23.17](https://img.shields.io/badge/AppVersion-1.23.17-informational?style=flat-square)
 
 A self-hosted Monitoring tool like "Uptime-Robot".
 
@@ -95,6 +95,7 @@ A self-hosted Monitoring tool like "Uptime-Robot".
 | resources | object | `{}` |  |
 | securityContext | object | `{}` |  |
 | service.annotations | object | `{}` |  |
+| service.loadBalancerIP | string | `nil` |  |
 | service.nodePort | string | `nil` |  |
 | service.port | int | `3001` |  |
 | service.type | string | `"ClusterIP"` |  |
