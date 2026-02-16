@@ -142,9 +142,8 @@ volume:
   enabled: true
   accessMode: ReadWriteOnce
   size: 4Gi
-  # If you want to use a storage class other than the default, uncomment this
-  # line and define the storage class name
-  # storageClassName:
+  # If you want to use a storage class other than the default, specify it here.
+  storageClassName: ""
   # Reuse your own pre-existing PVC.
   existingClaim: ""
 
@@ -168,19 +167,11 @@ additionalVolumeMounts:
 strategy:
   type: RollingUpdate
 
-# Mariadb configurations
-mariadb:
-  enabled: false
-  architecture: standalone
-  auth:
-    database: uptime_kuma
-    username: uptime_kuma
-    password: ""
-    rootPassword: ""
-
-# External MariaDB database configuration
-# Use this when you want to connect to an external database instead of deploying MariaDB
+# External MySQL/MariaDB database configuration
+# Configure this section to connect to your own MySQL or MariaDB database.
+# You can use any MySQL-compatible provider of your choice.
 externalDatabase:
+  type: "mariadb"
   enabled: false
   hostname: ""
   port: 3306

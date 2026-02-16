@@ -10,10 +10,5 @@ maintainers:
 name: uptime-kuma
 sources:
   - https://github.com/louislam/uptime-kuma
-dependencies:
-  - name: mariadb
-    version: 23.2.2
-    repository: https://charts.bitnami.com/bitnami
-    condition: mariadb.enabled
 type: application
-version: 3.0.0
+version: 4.0.0

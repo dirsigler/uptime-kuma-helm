@@ -7,19 +7,6 @@ templates:
   - pvc.yaml
   - serviceaccount.yaml
 tests:
-  - it: should fail when both mariadb and externalDatabase are enabled
-    set:
-      useDeploy: true
-      mariadb:
-        enabled: true
-      externalDatabase:
-        enabled: true
-    templates:
-      - deployment.yaml
-    asserts:
-      - failedTemplate:
-          errorMessage: "Cannot enable both MariaDB (.Values.mariadb.enabled) and external database (.Values.externalDatabase.enabled). Please choose one."
-
   - it: should create ingress when enabled
     set:
       ingress:
