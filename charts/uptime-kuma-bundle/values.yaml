@@ -1,0 +1,161 @@
+# uptime-kuma + optional Tailscale sidecar + optional MariaDB.
+# All toggles and shared config live under `global` so the uptime-kuma
+# subchart can read them via `.Values.global.*`.
+
+global:
+  tailscale:
+    enabled: false
+    # Tailscale auth key, read by the bundle's Secret template.
+    auth: ""
+    image:
+      repository: ghcr.io/tailscale/tailscale
+      pullPolicy: Always
+      tag: "latest"
+    # false: root + NET_ADMIN. true: userspace, restricted (needs proxy).
+    userspace: false
+    debugFirewallMode: "auto"
+    hostname: "uptime-kuma"
+    # subPath on the uptime-kuma volume to persist tailscale state.
+    stateSubPath: ""
+
+  # MariaDB config — readable by both the bundle's MariaDB templates
+  # and the uptime-kuma subchart. The subchart's `externalDatabase.*`
+  # defaults `tpl`-reference these, so changing a value here propagates
+  # to both server and client.
+  mariadb:
+    enabled: false
+    database: "kuma"
+    port: 3306
+    auth:
+      existingSecret: "db-secret"
+      secretKeys:
+        rootPassword: "root-password"
+        username: "username"
+        password: "password"
+
+    image:
+      repository: mariadb
+      tag: "12.2"
+      pullPolicy: IfNotPresent
+
+    config:
+      maxAllowedPacket: "256M"
+      innodbLogFileSize: "256M"
+
+    service:
+      type: ClusterIP
+
+    persistence:
+      enabled: false
+      existingClaim: ""
+      storageClass: ""
+      accessMode: ReadWriteOnce
+      size: 20Gi
+      mountPath: /var/lib/mysql
+      subPath: "db"
+
+    podSecurityContext: {}
+    securityContext: {}
+
+    resources:
+      limits:
+        cpu: 2000m
+        memory: 8Gi
+      requests:
+        cpu: 1000m
+        memory: 1Gi
+
+# Forwarded to the uptime-kuma subchart.
+uptime-kuma:
+  # Templated at render time. Injects wait-for-mariadb and/or tailscale sidecar
+  # based on the global toggles. Add your own initContainers after these blocks.
+  initContainers: |
+    {{- if .Values.global.mariadb.enabled }}
+    - name: wait-for-mariadb
+      image: busybox:latest
+      command:
+        - "/bin/sh"
+        - "-c"
+        - "until nc -z {{ .Release.Name }}-db {{ .Values.global.mariadb.port }}; do echo 'Waiting for MariaDB...'; sleep 2; done; echo 'MariaDB is ready.'"
+      resources:
+        limits:
+          memory: "64Mi"
+          cpu: "100m"
+        requests:
+          memory: "32Mi"
+          cpu: "50m"
+    {{- end }}
+    {{- if .Values.global.tailscale.enabled }}
+    - name: tailscale
+      restartPolicy: Always
+      imagePullPolicy: {{ .Values.global.tailscale.image.pullPolicy }}
+      image: "{{ .Values.global.tailscale.image.repository }}:{{ .Values.global.tailscale.image.tag }}"
+      securityContext:
+        {{- if .Values.global.tailscale.userspace }}
+        runAsUser: 1000
+        runAsGroup: 1000
+        {{- else }}
+        capabilities:
+          add:
+            - NET_ADMIN
+        {{- end }}
+      env:
+        - name: TS_HOSTNAME
+          value: {{ .Values.global.tailscale.hostname | quote }}
+        - name: KUBERNETES_SERVICE_HOST
+          value: ""
+        - name: TS_ACCEPT_DNS
+          value: "true"
+        - name: TS_AUTH_ONCE
+          value: "true"
+        - name: TS_USERSPACE
+          value: {{ .Values.global.tailscale.userspace | quote }}
+        - name: TS_DEBUG_FIREWALL_MODE
+          value: {{ .Values.global.tailscale.debugFirewallMode | quote }}
+        - name: TS_AUTHKEY
+          valueFrom:
+            secretKeyRef:
+              name: "{{ .Release.Name }}-tailscale-auth"
+              key: TS_AUTHKEY
+              optional: true
+      {{- if .Values.volume.enabled }}
+        - name: TS_STATE_DIR
+          value: "/usr/src/state"
+      volumeMounts:
+        - mountPath: "/usr/src/state"
+          name: storage
+          {{- if .Values.global.tailscale.stateSubPath }}
+          subPath: {{ .Values.global.tailscale.stateSubPath }}
+          {{- end }}
+      {{- end }}
+    {{- end }}
+
+  # How the service is exposed externally. Both can be enabled independently;
+  # no exclusivity check — the user is responsible for not double-exposing.
+  ingress:
+    enabled: false
+    # hosts:
+    #   - host: uptime.example.com
+    #     paths:
+    #       - path: /
+    #         pathType: Prefix
+  route:
+    enabled: false
+    # parentRefs:
+    #   - name: public
+    #     namespace: gateway-system
+    #     sectionName: https
+    # hostnames:
+    #   - "uptime.example.com"
+
+  # All string fields are rendered with `tpl`, so the defaults pull from
+  # `global.mariadb.*` — set them once there, they propagate here.
+  externalDatabase:
+    enabled: "{{ .Values.global.mariadb.enabled }}"
+    type: "mariadb"
+    hostname: "{{ .Release.Name }}-db"
+    port: "{{ .Values.global.mariadb.port }}"
+    database: "{{ .Values.global.mariadb.database }}"
+    existingSecret: "{{ .Values.global.mariadb.auth.existingSecret }}"
+    existingSecretUsernameKey: "{{ .Values.global.mariadb.auth.secretKeys.username }}"
+    existingSecretPasswordKey: "{{ .Values.global.mariadb.auth.secretKeys.password }}"

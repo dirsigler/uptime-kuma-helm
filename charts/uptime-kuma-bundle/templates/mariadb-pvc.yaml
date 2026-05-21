@@ -1,0 +1,18 @@
+{{- if and .Values.global.mariadb.enabled .Values.global.mariadb.persistence.enabled (not .Values.global.mariadb.persistence.existingClaim) -}}
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: {{ include "uptime-kuma-bundle.fullname" . }}-db
+  labels:
+    {{- include "uptime-kuma-bundle.labels" . | nindent 4 }}
+    app.kubernetes.io/component: database
+spec:
+  accessModes:
+    - {{ .Values.global.mariadb.persistence.accessMode }}
+  {{- if .Values.global.mariadb.persistence.storageClass }}
+  storageClassName: {{ .Values.global.mariadb.persistence.storageClass }}
+  {{- end }}
+  resources:
+    requests:
+      storage: {{ .Values.global.mariadb.persistence.size }}
+{{- end }}
