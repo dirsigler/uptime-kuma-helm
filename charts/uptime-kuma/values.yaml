@@ -89,6 +89,30 @@ ingress:
     #   hosts:
     #     - chart-example.local
 
+# Gateway API HTTPRoute
+route:
+  enabled: false
+  extraLabels: {}
+  annotations: {}
+  # References to the Gateway(s) this route attaches to.
+  parentRefs: []
+    # - name: my-gateway
+    #   namespace: gateway-system
+    #   sectionName: https
+  # Hostnames matched by this route.
+  hostnames: []
+    # - uptime.example.com
+  # Raw Gateway API rules — passed through as-is. See:
+  # https://gateway-api.sigs.k8s.io/api-types/httproute/#rules
+  rules: []
+    # - matches:
+    #     - path:
+    #         type: PathPrefix
+    #         value: /
+    #   backendRefs:
+    #     - name: RELEASE-NAME-uptime-kuma  # service name (use {{ include "uptime-kuma.fullname" . }} in your overlay)
+    #       port: 3001
+
 resources:
   {}
   # We usually recommend not to specify default resources and to leave this as a conscious
@@ -146,6 +170,8 @@ volume:
   storageClassName: ""
   # Reuse your own pre-existing PVC.
   existingClaim: ""
+  # Optional subPath to mount a specific subdirectory of the volume
+  subPath: ""
 
 # -- A list of additional volumes to be added to the pod
 additionalVolumes:
@@ -243,3 +269,6 @@ networkPolicy:
   #    role: frontend
   #  matchExpressions:
   #   - {key: role, operator: In, values: [frontend]}
+
+initContainers: []
+

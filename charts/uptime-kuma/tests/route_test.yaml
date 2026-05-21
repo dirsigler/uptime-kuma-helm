@@ -1,0 +1,83 @@
+suite: test route
+templates:
+  - route.yaml
+tests:
+  - it: should not render when disabled
+    set:
+      route:
+        enabled: false
+    asserts:
+      - hasDocuments:
+          count: 0
+
+  - it: should render HTTPRoute when enabled
+    set:
+      route:
+        enabled: true
+        parentRefs:
+          - name: my-gateway
+            namespace: gateway-system
+        hostnames:
+          - uptime.example.com
+        rules:
+          - matches:
+              - path:
+                  type: PathPrefix
+                  value: /
+            backendRefs:
+              - name: RELEASE-NAME-uptime-kuma
+                port: 3001
+    asserts:
+      - isKind:
+          of: HTTPRoute
+      - equal:
+          path: apiVersion
+          value: gateway.networking.k8s.io/v1
+      - equal:
+          path: metadata.name
+          value: RELEASE-NAME-uptime-kuma
+      - equal:
+          path: spec.parentRefs[0].name
+          value: my-gateway
+      - equal:
+          path: spec.parentRefs[0].namespace
+          value: gateway-system
+      - equal:
+          path: spec.hostnames[0]
+          value: uptime.example.com
+      - equal:
+          path: spec.rules[0].matches[0].path.value
+          value: /
+      - equal:
+          path: spec.rules[0].backendRefs[0].port
+          value: 3001
+
+  - it: should apply annotations and extraLabels
+    set:
+      route:
+        enabled: true
+        parentRefs:
+          - name: gw
+        annotations:
+          example.com/owner: team-a
+        extraLabels:
+          tier: edge
+    asserts:
+      - equal:
+          path: metadata.annotations["example.com/owner"]
+          value: team-a
+      - equal:
+          path: metadata.labels.tier
+          value: edge
+
+  - it: should omit hostnames and rules when empty
+    set:
+      route:
+        enabled: true
+        parentRefs:
+          - name: gw
+    asserts:
+      - notExists:
+          path: spec.hostnames
+      - notExists:
+          path: spec.rules
