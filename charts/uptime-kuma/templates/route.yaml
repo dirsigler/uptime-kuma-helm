@@ -21,8 +21,16 @@ spec:
   hostnames:
     {{- toYaml . | nindent 4 }}
   {{- end }}
-  {{- with .Values.route.rules }}
   rules:
-    {{- toYaml . | nindent 4 }}
-  {{- end }}
+    {{- if .Values.route.rules }}
+    {{- toYaml .Values.route.rules | nindent 4 }}
+    {{- else }}
+    - matches:
+        - path:
+            type: PathPrefix
+            value: /
+      backendRefs:
+        - name: {{ $fullName }}
+          port: {{ .Values.service.port }}
+    {{- end }}
 {{- end }}
