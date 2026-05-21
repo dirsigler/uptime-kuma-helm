@@ -1,0 +1,94 @@
+{{- if .Values.global.mariadb.enabled -}}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "uptime-kuma-bundle.fullname" . }}-db
+  labels:
+    {{- include "uptime-kuma-bundle.labels" . | nindent 4 }}
+    app.kubernetes.io/component: database
+spec:
+  replicas: 1
+  strategy:
+    type: Recreate
+  selector:
+    matchLabels:
+      {{- include "uptime-kuma-bundle.mariadb.selectorLabels" . | nindent 6 }}
+  template:
+    metadata:
+      labels:
+        {{- include "uptime-kuma-bundle.mariadb.selectorLabels" . | nindent 8 }}
+    spec:
+      {{- with .Values.global.mariadb.podSecurityContext }}
+      securityContext:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      containers:
+        - name: mariadb
+          {{- with .Values.global.mariadb.securityContext }}
+          securityContext:
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
+          image: "{{ .Values.global.mariadb.image.repository }}:{{ .Values.global.mariadb.image.tag }}"
+          imagePullPolicy: {{ .Values.global.mariadb.image.pullPolicy }}
+          args:
+            - --max-allowed-packet={{ .Values.global.mariadb.config.maxAllowedPacket }}
+            - --innodb-log-file-size={{ .Values.global.mariadb.config.innodbLogFileSize }}
+          ports:
+            - name: mysql
+              containerPort: {{ .Values.global.mariadb.port }}
+              protocol: TCP
+          env:
+            - name: MYSQL_ROOT_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.global.mariadb.auth.existingSecret }}
+                  key: {{ .Values.global.mariadb.auth.secretKeys.rootPassword }}
+            - name: MYSQL_DATABASE
+              value: {{ .Values.global.mariadb.database | quote }}
+            - name: MYSQL_USER
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.global.mariadb.auth.existingSecret }}
+                  key: {{ .Values.global.mariadb.auth.secretKeys.username }}
+            - name: MYSQL_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.global.mariadb.auth.existingSecret }}
+                  key: {{ .Values.global.mariadb.auth.secretKeys.password }}
+          livenessProbe:
+            exec:
+              command:
+                - sh
+                - -c
+                - mariadb-admin ping -u root -p${MYSQL_ROOT_PASSWORD}
+            initialDelaySeconds: 30
+            periodSeconds: 10
+            timeoutSeconds: 5
+            failureThreshold: 3
+          readinessProbe:
+            exec:
+              command:
+                - sh
+                - -c
+                - mariadb-admin ping -u root -p${MYSQL_ROOT_PASSWORD}
+            initialDelaySeconds: 10
+            periodSeconds: 5
+            timeoutSeconds: 3
+            failureThreshold: 3
+          resources:
+            {{- toYaml .Values.global.mariadb.resources | nindent 12 }}
+          {{- if .Values.global.mariadb.persistence.enabled }}
+          volumeMounts:
+            - name: mariadb-data
+              mountPath: {{ .Values.global.mariadb.persistence.mountPath }}
+              {{- if .Values.global.mariadb.persistence.subPath }}
+              subPath: {{ .Values.global.mariadb.persistence.subPath }}
+              {{- end }}
+          {{- end }}
+      {{- if .Values.global.mariadb.persistence.enabled }}
+      volumes:
+        - name: mariadb-data
+          persistentVolumeClaim:
+            claimName: {{ .Values.global.mariadb.persistence.existingClaim | default (printf "%s-db" (include "uptime-kuma-bundle.fullname" .)) }}
+      {{- end }}
+{{- end }}

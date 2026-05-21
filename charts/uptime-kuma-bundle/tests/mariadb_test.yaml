@@ -1,0 +1,162 @@
+suite: test bundle mariadb
+tests:
+  - it: should not render mariadb deployment when disabled
+    templates:
+      - mariadb-deployment.yaml
+    set:
+      global:
+        mariadb:
+          enabled: false
+    asserts:
+      - hasDocuments:
+          count: 0
+
+  - it: should not render mariadb service when disabled
+    templates:
+      - mariadb-service.yaml
+    set:
+      global:
+        mariadb:
+          enabled: false
+    asserts:
+      - hasDocuments:
+          count: 0
+
+  - it: should render Deployment when enabled
+    templates:
+      - mariadb-deployment.yaml
+    set:
+      global:
+        mariadb:
+          enabled: true
+    asserts:
+      - isKind:
+          of: Deployment
+      - equal:
+          path: metadata.name
+          value: RELEASE-NAME-db
+      - equal:
+          path: spec.template.spec.containers[0].image
+          value: "mariadb:12.2"
+
+  - it: image tag is customizable
+    templates:
+      - mariadb-deployment.yaml
+    set:
+      global:
+        mariadb:
+          enabled: true
+          image:
+            repository: mariadb
+            tag: "11.4"
+            pullPolicy: IfNotPresent
+    asserts:
+      - equal:
+          path: spec.template.spec.containers[0].image
+          value: "mariadb:11.4"
+
+  - it: should render Service on port 3306 by default
+    templates:
+      - mariadb-service.yaml
+    set:
+      global:
+        mariadb:
+          enabled: true
+    asserts:
+      - isKind:
+          of: Service
+      - equal:
+          path: spec.ports[0].port
+          value: 3306
+
+  - it: should reference credentials from the existing secret
+    templates:
+      - mariadb-deployment.yaml
+    set:
+      global:
+        mariadb:
+          enabled: true
+          auth:
+            existingSecret: my-db-secret
+            secretKeys:
+              rootPassword: root-pw
+              username: user
+              password: pw
+    asserts:
+      - contains:
+          path: spec.template.spec.containers[0].env
+          content:
+            name: MYSQL_ROOT_PASSWORD
+            valueFrom:
+              secretKeyRef:
+                name: my-db-secret
+                key: root-pw
+      - contains:
+          path: spec.template.spec.containers[0].env
+          content:
+            name: MYSQL_USER
+            valueFrom:
+              secretKeyRef:
+                name: my-db-secret
+                key: user
+
+  - it: should render PVC when persistence enabled and no existingClaim
+    templates:
+      - mariadb-pvc.yaml
+    set:
+      global:
+        mariadb:
+          enabled: true
+          persistence:
+            enabled: true
+            size: 10Gi
+            accessMode: ReadWriteOnce
+    asserts:
+      - isKind:
+          of: PersistentVolumeClaim
+      - equal:
+          path: metadata.name
+          value: RELEASE-NAME-db
+      - equal:
+          path: spec.resources.requests.storage
+          value: 10Gi
+
+  - it: should NOT render PVC when existingClaim is set
+    templates:
+      - mariadb-pvc.yaml
+    set:
+      global:
+        mariadb:
+          enabled: true
+          persistence:
+            enabled: true
+            existingClaim: my-claim
+    asserts:
+      - hasDocuments:
+          count: 0
+
+  - it: should inject wait-for-mariadb initContainer into uptime-kuma when mariadb enabled
+    templates:
+      - charts/uptime-kuma/templates/deployment.yaml
+    set:
+      global:
+        mariadb:
+          enabled: true
+    asserts:
+      - contains:
+          path: spec.template.spec.initContainers
+          content:
+            name: wait-for-mariadb
+            image: busybox:latest
+          any: true
+
+  - it: should NOT inject wait-for-mariadb when mariadb disabled
+    templates:
+      - charts/uptime-kuma/templates/deployment.yaml
+    set:
+      global:
+        mariadb:
+          enabled: false
+    asserts:
+      - notExists:
+          path: spec.template.spec.initContainers

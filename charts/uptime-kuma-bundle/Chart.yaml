@@ -1,0 +1,16 @@
+# Don't forget "helm dependency update" if the source chart has changed
+apiVersion: v2
+name: uptime-kuma-bundle
+description: Uptime Kuma bundled with optional MariaDB database and Tailscale sidecar.
+type: application
+version: 0.1.0
+appVersion: "2.3.0"
+home: https://github.com/softlion/uptime-kuma-helm
+sources:
+  - https://github.com/louislam/uptime-kuma
+maintainers:
+  - name: softlion
+dependencies:
+  - name: uptime-kuma
+    version: "4.2.0"
+    repository: "file://../uptime-kuma"

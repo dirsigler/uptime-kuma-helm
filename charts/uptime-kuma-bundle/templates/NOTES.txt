@@ -1,0 +1,21 @@
+{{- if .Values.global.tailscale.enabled }}
+Tailscale sidecar: ENABLED
+  Secret:   {{ .Release.Name }}-tailscale-auth (key: TS_AUTHKEY)
+  Hostname: {{ .Values.global.tailscale.hostname }}
+{{- if not .Values.global.tailscale.auth }}
+  ⚠  tailscale.auth is empty — set it to a valid auth key for tailscale to connect.
+{{- end }}
+{{- end }}
+
+{{- if .Values.global.mariadb.enabled }}
+MariaDB: ENABLED
+  Image:   {{ .Values.global.mariadb.image.repository }}:{{ .Values.global.mariadb.image.tag }}
+  Service: {{ include "uptime-kuma-bundle.fullname" . }}-db:{{ .Values.global.mariadb.port }}
+  Secret:  {{ .Values.global.mariadb.auth.existingSecret }} (must exist — create it before install)
+    required keys: {{ .Values.global.mariadb.auth.secretKeys.rootPassword }}, {{ .Values.global.mariadb.auth.secretKeys.username }}, {{ .Values.global.mariadb.auth.secretKeys.password }}
+{{- if not (index .Values "uptime-kuma" "externalDatabase" "enabled") }}
+  ⚠  uptime-kuma.externalDatabase.enabled is false — uptime-kuma will not connect to MariaDB until you enable it.
+{{- end }}
+{{- end }}
+
+uptime-kuma Service: {{ .Release.Name }}-uptime-kuma:{{ index .Values "uptime-kuma" "service" "port" | default 3001 }}
