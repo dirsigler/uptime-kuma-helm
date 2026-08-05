@@ -8,7 +8,7 @@ metadata:
     {{- include "uptime-kuma.labels" . | nindent 4 }}
 spec:
   serviceName: {{ include "uptime-kuma.fullname" . }}
-  replicas: 1
+  replicas: {{ include "uptime-kuma.replicaCount" . }}
   {{- with .Values.strategy }}
   updateStrategy:
     {{- toYaml . | nindent 4 }}

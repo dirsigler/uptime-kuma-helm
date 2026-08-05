@@ -81,6 +81,7 @@ A self-hosted Monitoring tool like "Uptime-Robot".
 | readinessProbe.periodSeconds | int | `10` |  |
 | readinessProbe.successThreshold | int | `1` |  |
 | readinessProbe.timeoutSeconds | int | `1` |  |
+| replicaCount | int | `1` | Number of replicas for the Deployment or StatefulSet. Uptime-Kuma is not horizontally scalable, so only 0 (paused) or 1 (running) are permitted. |
 | resources | object | `{}` |  |
 | securityContext | object | `{}` |  |
 | service.annotations | object | `{}` |  |
