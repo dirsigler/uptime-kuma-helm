@@ -76,6 +76,18 @@ Set automountServiceAccountToken when service account is created
 {{- end }}
 
 {{/*
+Number of replicas. Uptime-Kuma is not horizontally scalable, so only 0
+(paused) or 1 (running) are permitted.
+*/}}
+{{- define "uptime-kuma.replicaCount" -}}
+{{- $replicas := int .Values.replicaCount -}}
+{{- if not (or (eq $replicas 0) (eq $replicas 1)) -}}
+{{- fail (printf "replicaCount must be 0 or 1, got %d" $replicas) -}}
+{{- end -}}
+{{- $replicas -}}
+{{- end }}
+
+{{/*
 Determine the namespace to use, allowing for a namespace override.
 */}}
 {{- define "uptime-kuma.namespace" -}}

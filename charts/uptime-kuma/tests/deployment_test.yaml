@@ -22,6 +22,23 @@ tests:
       - hasDocuments:
           count: 0
 
+  - it: should allow scaling to zero replicas
+    set:
+      useDeploy: true
+      replicaCount: 0
+    asserts:
+      - equal:
+          path: spec.replicas
+          value: 0
+
+  - it: should fail when replicaCount is greater than 1
+    set:
+      useDeploy: true
+      replicaCount: 2
+    asserts:
+      - failedTemplate:
+          errorMessage: "replicaCount must be 0 or 1, got 2"
+
   - it: should set correct image
     set:
       useDeploy: true

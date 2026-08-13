@@ -17,6 +17,10 @@ namespaceOverride: ""
 # If this option is set to false a StateFulset instead of a Deployment is used
 useDeploy: true
 
+# -- Number of replicas for the Deployment or StatefulSet. Uptime-Kuma is not
+# horizontally scalable, so only 0 (paused) or 1 (running) are permitted.
+replicaCount: 1
+
 serviceAccount:
   # Specifies whether a service account should be created
   create: false
