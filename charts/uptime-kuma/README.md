@@ -1,6 +1,6 @@
 # uptime-kuma
 
-![Version: 4.2.0](https://img.shields.io/badge/Version-4.2.0-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 2.5.0](https://img.shields.io/badge/AppVersion-2.5.0-informational?style=flat-square)
+![Version: 4.3.0](https://img.shields.io/badge/Version-4.3.0-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 2.5.0](https://img.shields.io/badge/AppVersion-2.5.0-informational?style=flat-square)
 
 A self-hosted Monitoring tool like "Uptime-Robot".
 
@@ -36,6 +36,13 @@ A self-hosted Monitoring tool like "Uptime-Robot".
 | externalDatabase.type | string | `"mariadb"` |  |
 | externalDatabase.username | string | `"uptime_kuma"` |  |
 | fullnameOverride | string | `""` |  |
+| httpRoute | object | `{"annotations":{},"enabled":false,"extraLabels":{},"hostnames":[],"parentRefs":[],"rules":[{"matches":[{"path":{"type":"PathPrefix","value":"/"}}]}]}` | Gateway API HTTPRoute configuration, can be used instead of the Ingress. Requires the Gateway API CRDs to be installed in the cluster. ref: https://gateway-api.sigs.k8s.io/api-types/httproute/ |
+| httpRoute.annotations | object | `{}` | Additional annotations to add to the HTTPRoute |
+| httpRoute.enabled | bool | `false` | Enable/disable the Gateway API HTTPRoute |
+| httpRoute.extraLabels | object | `{}` | Additional labels to add to the HTTPRoute |
+| httpRoute.hostnames | list | `[]` | Hostnames this HTTPRoute should match |
+| httpRoute.parentRefs | list | `[]` | Gateways this HTTPRoute should be attached to |
+| httpRoute.rules | list | `[{"matches":[{"path":{"type":"PathPrefix","value":"/"}}]}]` | HTTPRoute rules. If a rule specifies no backendRefs, the Uptime-Kuma Service is used as the backend automatically. Additional rule fields such as filters or timeouts are passed through as-is. |
 | image.pullPolicy | string | `"IfNotPresent"` |  |
 | image.repository | string | `"louislam/uptime-kuma"` |  |
 | image.tag | string | `"2.5.0"` |  |

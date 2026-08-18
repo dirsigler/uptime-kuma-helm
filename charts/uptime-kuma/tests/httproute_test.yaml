@@ -1,0 +1,154 @@
+suite: test httproute
+templates:
+  - httproute.yaml
+tests:
+  - it: should not create httproute by default
+    asserts:
+      - hasDocuments:
+          count: 0
+
+  - it: should create httproute when enabled
+    set:
+      httpRoute:
+        enabled: true
+        parentRefs:
+          - name: my-gateway
+            namespace: my-gateway-namespace
+        hostnames:
+          - uptime-kuma.example.com
+    asserts:
+      - isKind:
+          of: HTTPRoute
+      - isAPIVersion:
+          of: gateway.networking.k8s.io/v1
+      - equal:
+          path: metadata.name
+          value: RELEASE-NAME-uptime-kuma
+      - equal:
+          path: spec.parentRefs[0].name
+          value: my-gateway
+      - equal:
+          path: spec.parentRefs[0].namespace
+          value: my-gateway-namespace
+      - equal:
+          path: spec.hostnames[0]
+          value: uptime-kuma.example.com
+
+  - it: should default the backend to the uptime-kuma service
+    set:
+      httpRoute:
+        enabled: true
+    asserts:
+      - equal:
+          path: spec.rules[0].backendRefs[0].name
+          value: RELEASE-NAME-uptime-kuma
+      - equal:
+          path: spec.rules[0].backendRefs[0].port
+          value: 3001
+      - equal:
+          path: spec.rules[0].matches[0].path.type
+          value: PathPrefix
+      - equal:
+          path: spec.rules[0].matches[0].path.value
+          value: /
+
+  - it: should allow custom backendRefs
+    set:
+      httpRoute:
+        enabled: true
+        rules:
+          - matches:
+              - path:
+                  type: PathPrefix
+                  value: /
+            backendRefs:
+              - name: custom-service
+                port: 8080
+    asserts:
+      - equal:
+          path: spec.rules[0].backendRefs[0].name
+          value: custom-service
+      - equal:
+          path: spec.rules[0].backendRefs[0].port
+          value: 8080
+
+  - it: should pass through additional rule fields
+    set:
+      httpRoute:
+        enabled: true
+        rules:
+          - matches:
+              - path:
+                  type: PathPrefix
+                  value: /
+            filters:
+              - type: RequestHeaderModifier
+                requestHeaderModifier:
+                  set:
+                    - name: X-Forwarded-Proto
+                      value: https
+            timeouts:
+              request: 3600s
+    asserts:
+      - equal:
+          path: spec.rules[0].filters[0].type
+          value: RequestHeaderModifier
+      - equal:
+          path: spec.rules[0].timeouts.request
+          value: 3600s
+
+  - it: should set httproute annotations
+    set:
+      httpRoute:
+        enabled: true
+        annotations:
+          example.com/annotation: my-annotation
+    asserts:
+      - equal:
+          path: metadata.annotations["example.com/annotation"]
+          value: my-annotation
+
+  - it: should add extra labels
+    set:
+      httpRoute:
+        enabled: true
+        extraLabels:
+          environment: production
+          team: monitoring
+    asserts:
+      - equal:
+          path: metadata.labels.environment
+          value: production
+      - equal:
+          path: metadata.labels.team
+          value: monitoring
+
+  - it: should handle multiple rules
+    set:
+      httpRoute:
+        enabled: true
+        rules:
+          - matches:
+              - path:
+                  type: PathPrefix
+                  value: /
+          - matches:
+              - path:
+                  type: PathPrefix
+                  value: /metrics
+            backendRefs:
+              - name: metrics-service
+                port: 9090
+    asserts:
+      - equal:
+          path: spec.rules[0].matches[0].path.value
+          value: /
+      - equal:
+          path: spec.rules[0].backendRefs[0].name
+          value: RELEASE-NAME-uptime-kuma
+      - equal:
+          path: spec.rules[1].matches[0].path.value
+          value: /metrics
+      - equal:
+          path: spec.rules[1].backendRefs[0].name
+          value: metrics-service

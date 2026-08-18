@@ -89,6 +89,37 @@ ingress:
     #   hosts:
     #     - chart-example.local
 
+# -- Gateway API HTTPRoute configuration, can be used instead of the Ingress.
+# Requires the Gateway API CRDs to be installed in the cluster.
+# ref: https://gateway-api.sigs.k8s.io/api-types/httproute/
+httpRoute:
+  # -- Enable/disable the Gateway API HTTPRoute
+  enabled: false
+  # -- Additional annotations to add to the HTTPRoute
+  annotations: {}
+  # -- Additional labels to add to the HTTPRoute
+  extraLabels:
+    {}
+    # vhost: uptime-kuma.company.corp
+  # -- Gateways this HTTPRoute should be attached to
+  parentRefs:
+    []
+    # - name: my-gateway
+    #   namespace: my-gateway-namespace
+    #   sectionName: https
+  # -- Hostnames this HTTPRoute should match
+  hostnames:
+    []
+    # - chart-example.local
+  # -- HTTPRoute rules. If a rule specifies no backendRefs, the Uptime-Kuma
+  # Service is used as the backend automatically. Additional rule fields such
+  # as filters or timeouts are passed through as-is.
+  rules:
+    - matches:
+        - path:
+            type: PathPrefix
+            value: /
+
 resources:
   {}
   # We usually recommend not to specify default resources and to leave this as a conscious
