@@ -5,6 +5,14 @@
   http{{ if $.Values.ingress.tls }}s{{ end }}://{{ $host.host }}{{ .path }}
   {{- end }}
 {{- end }}
+{{- else if .Values.httpRoute.enabled }}
+{{- if .Values.httpRoute.hostnames }}
+{{- range .Values.httpRoute.hostnames }}
+  http://{{ . }}
+{{- end }}
+{{- else }}
+  The HTTPRoute is attached to your Gateway. Use the address of your Gateway to access Uptime-Kuma.
+{{- end }}
 {{- else if contains "NodePort" .Values.service.type }}
   export NODE_PORT=$(kubectl get --namespace {{ .Release.Namespace }} -o jsonpath="{.spec.ports[0].nodePort}" services {{ include "uptime-kuma.fullname" . }})
   export NODE_IP=$(kubectl get nodes --namespace {{ .Release.Namespace }} -o jsonpath="{.items[0].status.addresses[0].address}")
