@@ -24,7 +24,7 @@ jobs:
       - name: Install Helm
         uses: azure/setup-helm@v5
         with:
-          version: v3.4.0
+          version: v3.22.0
 
       # https://github.com/helm/chart-releaser?tab=readme-ov-file#dealing-with-charts-that-have-dependencies
       - name: Add dependencies
